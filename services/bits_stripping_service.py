@@ -1,3 +1,5 @@
+import numpy as np
+
 class bits_stripping_services():
     def __init__(self, bit_start, bit_count, value):
         self.bit_start = bit_start

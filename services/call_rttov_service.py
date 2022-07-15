@@ -1,9 +1,23 @@
+import numpy as np
+
 class call_rttov_services():
 
     def __init__(self, path_Rttov_coef, datetimes, angles, surfgeom, surftype, s2m, skin, simplecloud, clwscheme, icecloud, zeeman, p, t, he):
         self.path_Rttov_coef = path_Rttov_coef
         self.datetimes = datetimes
         self.angles = angles
+        self.surfgeom = surfgeom
+        self.surftype = surftype
+        self.s2m = s2m 
+        self.skin = skin
+        self.simplecloud = simplecloud
+        self.clwscheme = clwscheme
+        self.icecloud = icecloud
+        self. zeeman = zeeman
+        self.p = p
+        self.t = t
+        self.he = he
+        
 
     def call_rttov(self):
         
@@ -20,7 +34,7 @@ class call_rttov_services():
         '''
         try:
             print('RUN RTTOV')
-            nprofiles = t.shape[1]
+            nprofiles = self.t.shape[1]
             nlevels = 25
             gas_units = 1  
             mmr_cldaer = 1
@@ -29,8 +43,8 @@ class call_rttov_services():
             gas_id_q = 1
             gas_id = np.array([gas_id_q], dtype=np.int32)
                     
-            gases = np.empty((25, t.shape[1], len(gas_id)), order='F', dtype=np.float64)
-            gases[:,:,0] = he
+            gases = np.empty((25, self.t.shape[1], len(gas_id)), order='F', dtype=np.float64)
+            gases[:,:,0] = self.he
             
     
             # =================================================================
@@ -106,8 +120,8 @@ class call_rttov_services():
             #print('call direct model')
             #Call the wrapper subroutine to run RTTOV direct
 
-            err = rttov_call_direct(inst_id, channel_list[[28,30,31]], self.datetimes, self.angles, surfgeom, surftype, skin, s2m, \
-                                    simplecloud, clwscheme, icecloud, zeeman, p, t, gas_units, mmr_cldaer, \
+            err = rttov_call_direct(inst_id, channel_list[[28,30,31]], self.datetimes, self.angles, self.surfgeom, self.surftype, self.skin, self.s2m, \
+                                    self.simplecloud, self.clwscheme, self.icecloud, self.zeeman, self.p, self.t, gas_units, mmr_cldaer, \
                                     gas_id, gases, surfemisrefl, btrefl, rad)
             if err != 0:
                 print('Error running RTTOV direct')

@@ -1,3 +1,5 @@
+from pyhdf.SD import SD, SDC
+
 class cloud_mask_services:
 
     def __init__(self,f_Myd35_hours, hours_list):

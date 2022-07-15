@@ -8,11 +8,42 @@ from operator import itemgetter
 
 class utilitiesUveg():
 
-    def __init__(self):
-        pass
+    consA = np.float64(119110000.0)
+    consB = np.float64(14388.0)
+    lonOnda29 = np.float64(8.55)
+    lonOnda31 = np.float64(11.015)
+    lonOnda32 = np.float64(12.02)
+    nOnda29 = np.float64(1173.263)
+    nOnda31 = np.float64(908.273)
+    nOnda32 = np.float64(831.523)
+    emissivity = 0.98
+    lo = [8.535, 11.015, 12.041]
+
+    c1 = 0.998449
+    c2 = -0.654215
+    c3 = 0.735536 
+    K1 = [2631.58, 735.84, 471.25] 
+    K2 = [1686.18, 1306.72, 1195.27]
+
+    #***0.03  value ***
+    d1_1 = [0.016117854,0.028460421,0.026695870]
+    d2_1 = [-0.017482940,-0.028220773,-0.028131707]
+    d3_1 = [0.000049389,0.000043778,0.000021690]
+    d4_1 = [-0.000000219,0.000000063,0.000000126]
+    d5_1 = [-0.000056240,-0.000053979,-0.000030838]
+    d6_1 = [0.000726560,0.000216716,0.001238195]
+
+    f1_1 = [0.019000886,0.024789637,0.030145755]
+    f2_1 = [-0.001376105,-0.002572940,-0.003234448]
+    f3_1 = [0.000014232,-0.000063260,0.000004645]
+    f4_1 = [-0.000000329,0.000001213,0.000000452]
+    f5_1 = [0.000001726,0.000018007,0.000004733]
+    f6_1 = [0.001851194,0.001218762,0.001042131]
+
+   
 
     
-    def extract_mask_land(self, path_Input):
+    def extract_mask_land( path_Input):
         ''' 
         Resum: Function extract global mask sea/land era5 files
         
@@ -37,7 +68,7 @@ class utilitiesUveg():
             print("OS error: {0}".format(err))
 
 
-    def extract_vars_era5(self, path_input, year, month, day, mask_sea_land_era5, hours, hours_list, file_data):
+    def extract_vars_era5(path_input, year, month, day, mask_sea_land_era5, hours, hours_list, file_data):
         ''' 
         Resum: Function extract vars  Temperature and Relative Humidity
         
@@ -78,7 +109,7 @@ class utilitiesUveg():
             print("Error in the path of the ERA-5 files")
 
 
-    def extract_vars_myd03(self, f_Myd03_hours, hours_list):
+    def extract_vars_myd03(f_Myd03_hours, hours_list):
         ''' 
         Resum: Function extract vars  height, lat, lon, zsat, mask sea/land product myd03
         
@@ -115,7 +146,7 @@ class utilitiesUveg():
             print("Error in the path of the Myd03 files")
     
 
-    def extract_index_image(self, lat_Modis, lon_Modis, mask_sea_land_modis, dimension):
+    def extract_index_image(lat_Modis, lon_Modis, mask_sea_land_modis, dimension):
         ''' 
         Resum: This function stores the dimensions of the original 2d matrix, 
                and is used to reconstruct a flattened matrix to a 2d matrix
@@ -148,7 +179,7 @@ class utilitiesUveg():
             print("Error extract original mask")
 
 
-    def extract_ndvi(self, lat_Modis, lon_Modis, ndvi_lat, ndvi_lon, ndvi):
+    def extract_ndvi(lat_Modis, lon_Modis, ndvi_lat, ndvi_lon, ndvi):
         ''' 
         Resum: This function extracts a clipping of the NDVI matrix based on the input modis image
         
@@ -188,7 +219,7 @@ class utilitiesUveg():
           print("Error extract ndvi clip")
 
 
-    def match_myd03_myd021_myd35(self, f_Myd03 , f_Myd02, f_Myd35):
+    def match_myd03_myd021_myd35(f_Myd03 , f_Myd02, f_Myd35):
         ''' 
         Resum: Function match files Myd03, Myd021km and Myd35 
         
@@ -341,7 +372,7 @@ class utilitiesUveg():
             print("OS error: {0}".format(err))
 
 
-    def extract_ndvi(self, lat_Modis, lon_Modis, ndvi_lat, ndvi_lon, ndvi):
+    def extract_ndvi(lat_Modis, lon_Modis, ndvi_lat, ndvi_lon, ndvi):
         ''' 
         Resum: This function extracts a clipping of the NDVI matrix based on the input modis image
         
@@ -381,7 +412,7 @@ class utilitiesUveg():
           print("Error extract ndvi clip")
 
 
-    def extract_index_modis_and_era(self, lat_Nc, lon_Nc, lat_Modis, lon_Modis, mask_sea_land_era5):
+    def extract_index_modis_and_era(lat_Nc, lon_Nc, lat_Modis, lon_Modis, mask_sea_land_era5):
         ''' 
         Resum: This function extracts a snippet of Era5 global data from an image Modis
         
@@ -410,21 +441,21 @@ class utilitiesUveg():
             print("Error extract era5 clip")
 
 
-    def extract_height(self, height, mask_land_modis, cloud_mask_flag):
+    def extract_height(height, mask_land_modis, cloud_mask_flag):
       height = np.where(cloud_mask_flag==0, 0, height)
       h = height.ravel()
       h = h[mask_land_modis]
       return h
 
 
-    def extract_zenith(self, zenith, mask_land_modis, cloud_mask_flag):
+    def extract_zenith(zenith, mask_land_modis, cloud_mask_flag):
       zenith = np.where(cloud_mask_flag==0, 0, zenith)
       z = zenith.ravel()
       z = z[mask_land_modis]
       return z
 
 
-    def extract_temperature(self, temp_era, index_Era):
+    def extract_temperature(temp_era, index_Era):
         n = len(temp_era[0,:,0])
         m = len(temp_era[0,0,:])
         m_n = m * n
@@ -434,7 +465,7 @@ class utilitiesUveg():
         return np.round(t,5)
 
 
-    def extract_humidity(self, hum_E, index_Era):
+    def extract_humidity(hum_E, index_Era):
         n = len(hum_E[0,:,0])
         m = len(hum_E[0,0,:])
         m_n = m * n
@@ -445,7 +476,7 @@ class utilitiesUveg():
         return np.round(he,8)
 
 
-    def extract_param_2m(self, t_2m, sk_t, d2_m, ms_l1, index_Era, h_):
+    def extract_param_2m(t_2m, sk_t, d2_m, ms_l1, index_Era, h_):
         t_2m = t_2m.ravel()
         sk_t = sk_t.ravel()
         d2_m = d2_m.ravel()
@@ -470,7 +501,7 @@ class utilitiesUveg():
         return np.round(t_2m,5), np.round(sk_t,5), np.round(p,5), np.round(q2,5)
 
 
-    def chance_units(self, consA, consB, bt, radtotal, radup, raddown, tautotal, emissivity, nOnda29, nOnda31, nOnda32, lonOnda29, lonOnda31, \
+    def chance_units(consA, consB, bt, radtotal, radup, raddown, tautotal, emissivity, nOnda29, nOnda31, nOnda32, lonOnda29, lonOnda31, \
                           lonOnda32, Lbb29, Lbb31, Lbb32):
         try:
             # Cambio de unidades radiancia total
@@ -517,7 +548,7 @@ class utilitiesUveg():
         except OSError as err:
             print("OS error: {0}".format(err))
 
-    def write_csv_files(self, path ,file, year, month):  
+    def write_csv_files(path ,file, year, month):  
         try:
            # open the file in the write mode
            with open(path + year + month +'.csv', 'a', newline='') as f:

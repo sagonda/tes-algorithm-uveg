@@ -1,3 +1,5 @@
+import numpy as np
+
 class create_profiles_services():
 
     def __init__(self, dimension_modis, altura, latitud, longitud, h_, p2m, t2, q2m, sk, level, temp_era, year, month, day):

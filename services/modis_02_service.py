@@ -1,3 +1,6 @@
+import netCDF4 as net
+import numpy as np
+ 
 class modis_02_Services():
 
     def __init__(self, f_Myd02_hours, hours_list, i_modis, cloud_mask_flag, dimension_original):

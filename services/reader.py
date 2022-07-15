@@ -1,8 +1,7 @@
 import netCDF4 as net
 import numpy as np
 import glob
-from pyhdf.SD import SD, SDC
-from rttov_wrapper_f2py import *
+
 
 class readerUveg():
     def __init__(self, year, month, day, path_files_nvdi, path_files_Myd03, path_files_Myd021, path_files_Myd35, path_files_CSV):
@@ -325,11 +324,11 @@ class readerUveg():
            with open(self.path_files_CSV + self.year + self.month +'.csv', 'r') as f:
                line = f.readlines()
                line = line[-1]
-               day = line[10:12]
+               self.day = line[10:12]
                hour = line[13:15] + '00'
-               print('day:',day,'hour:',hour)
+               print('day:',self.day,'hour:',hour)
                
-           return day, hour               
+           return self.day, hour               
            
         except OSError as err:
             print("OS error: {0}".format(err))
