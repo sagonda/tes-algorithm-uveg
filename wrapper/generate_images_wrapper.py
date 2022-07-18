@@ -11,23 +11,22 @@ Content: Library process RTTOV
 """
 
 # Importamos las librerias
-from services import bits_stripping_service
-from services import call_rttov_service
-from services import cloud_mas_service
-from services import create_nc_outfile_service
-from services import create_profiles_service
-from services import FCV_service
-from services import modis_02_service
-from services import new_array_service
-from services import packed_value_service
-from services import process
+from services.bits_stripping_service import bits_stripping_services
+from services.call_rttov_service import call_rttov_services
+from services.cloud_mas_service import cloud_mask_services
+from services.create_nc_outfile_service import create_nc_outfile_services
+from services.create_profiles_service import create_profiles_services
+from services.FCV_service import FCV_services
+from services.modis_02_service import modis_02_Services
+from services.new_array_service import new_array_services
+from services.packed_value_service import packed_value_services
+from services.process import processUveg
 from services.reader import readerUveg
-from services import recl_e_service
-from services import sw_services
-from services import tes_modis_service
-from services import unpacked_value_service
-from utilities import *
-
+from services.recl_e_service import recl_services
+from services.sw_services import sw_services
+from services.tes_modis_service import tes_modis_services
+from services.unpacked_value_service import unpacked_value_services
+from utilities.utilities import utilitiesUveg
 
 import netCDF4 as net
 import numpy as np
@@ -56,6 +55,19 @@ month = sys.argv[2]
 # year = '2016'
 # month = '08'
 INIT = 1
+# output_path_images_uveg ='/gws/nopw/j04/esacci_lst/UV/output_uveg/'
+# input_path_images_ndvi = '/gws/nopw/j04/esacci_lst/UV/data/ndvi/'
+# input_path_images_collection61 = '/neodc/modis/data/MYD03/collection61/'
+# input_path_images_MYD021KM = '/neodc/modis/data/MYD021KM/collection61/'
+# input_path_images_MYD35_L2 =  '/neodc/modis/data/MYD35_L2/collection61/'
+# input_path_images_invariants = '/badc/ecmwf-era5/data/invariants/'
+# input_path_images_ecmwfera5_an_ml = '/badc/ecmwf-era5/data/oper/an_ml/'
+# input_path_images_ecmwfera5_an_sfc = '/badc/ecmwf-era5/data/oper/an_sfc/'
+# input_path_images_ecmwfera51_an_ml = '/badc/ecmwf-era51/data/oper/an_ml/'
+# input_path_images_ecmwfera51_an_sfc = '/badc/ecmwf-era51/data/oper/an_sfc/'
+# input_path_images_rtcoef_rttov12 = '/gws/nopw/j04/esacci_lst/UV/software/rttov12/rtcoef_rttov12/'
+
+
 output_path_images_uveg ='/gws/nopw/j04/esacci_lst/UV/output_uveg/'
 input_path_images_ndvi = '/gws/nopw/j04/esacci_lst/UV/data/ndvi/'
 input_path_images_collection61 = '/neodc/modis/data/MYD03/collection61/'
@@ -73,7 +85,7 @@ try:
     
     if os.path.isfile(output_path_images_uveg+year+'/'+month+'/'+year+month+'.csv'):
         print('Existe el archivo de rutas')
-        INIT , hour = rt.read_csv_files(output_path_images_uveg+year+'/'+month+'/', year, month)
+        INIT , hour = readerUveg.read_csv_files(output_path_images_uveg+year+'/'+month+'/', year, month)
     else:
         hour = '0000'
         print('No existe archivo de rutas')
@@ -106,16 +118,16 @@ for day_ in range(int(INIT), num_days+1):
         lista_files_Myd02 = readerUveg.read_myd021_files(input_path_images_MYD021KM,  year, month, day)
         
         #---------Read Myd35 files....
-        lista_files_Myd35 = rt.read_myd021_files(input_path_images_MYD35_L2,  year, month, day)
+        lista_files_Myd35 = readerUveg.read_myd35_files(input_path_images_MYD35_L2,  year, month, day)
         
         #---------Match files------------
-        f_Myd03, f_Myd02, f_Myd35 = rt.match_myd03_myd021_myd35(lista_files_Myd03 , lista_files_Myd02, lista_files_Myd35)
+        f_Myd03, f_Myd02, f_Myd35 = utilitiesUveg.match_myd03_myd021_myd35(lista_files_Myd03 , lista_files_Myd02, lista_files_Myd35)
         
         #---------Match files------------
-        hours, f_Myd03_hours, f_Myd02_hours, f_Myd35_hours = rt.read_match_files(f_Myd03, f_Myd02, f_Myd35)
+        hours, f_Myd03_hours, f_Myd02_hours, f_Myd35_hours = readerUveg.read_match_files(f_Myd03, f_Myd02, f_Myd35)
         #print(hours, f_Myd03_hours, f_Myd02_hours, f_Myd35_hours)
         
-        mask_sea_land_era5 = rt.extract_mask_land(input_path_images_invariants)
+        mask_sea_land_era5 = utilitiesUveg.extract_mask_land(input_path_images_invariants)
         print('Se van a procesar: ', len(f_Myd03), 'imagenes!!')
         INIT_HOURS = hours.index(hour)
         print('INIT_HOURS:',INIT_HOURS)
@@ -123,14 +135,14 @@ for day_ in range(int(INIT), num_days+1):
         
         for hours_list in range(INIT_HOURS, len(hours)): 
             try:     
-                cloud_Masks = rt.cloud_mask(f_Myd35_hours, hours_list)
-                height, lat_Myd03, lon_Myd03, zsat, mask_sea_land_modis, name, rep, data_Myd03 = rt.extract_vars_myd03(f_Myd03_hours, hours_list)
+                cloud_Masks = cloud_mask_services.cloud_mask(f_Myd35_hours, hours_list) 
+                height, lat_Myd03, lon_Myd03, zsat, mask_sea_land_modis, name, rep, data_Myd03 = utilitiesUveg.extract_vars_myd03(f_Myd03_hours, hours_list)
                 if os.path.exists(input_path_images_ecmwfera5_an_ml+year+'/'+month+'/'+day+'/'):
                     file_data = 'ecmwf-era5_oper_an_ml_'
-                    temp_era, hum_E, lat_Nc, lon_Nc = rt.extract_vars_era5(input_path_images_ecmwfera5_an_ml, year, month, day, mask_sea_land_era5, hours, hours_list, file_data)
+                    temp_era, hum_E, lat_Nc, lon_Nc = utilitiesUveg.extract_vars_era5(input_path_images_ecmwfera5_an_ml, year, month, day, mask_sea_land_era5, hours, hours_list, file_data)
                 else:
                     file_data = 'ecmwf-era51_oper_an_ml_'
-                    temp_era, hum_E, lat_Nc, lon_Nc = rt.extract_vars_era5(input_path_images_ecmwfera51_an_ml, year, month, day, mask_sea_land_era5, hours, hours_list, file_data)
+                    temp_era, hum_E, lat_Nc, lon_Nc = utilitiesUveg.extract_vars_era5(input_path_images_ecmwfera51_an_ml, year, month, day, mask_sea_land_era5, hours, hours_list, file_data)
                 
                 if os.path.exists(input_path_images_ecmwfera5_an_sfc+year+'/'+month+'/'+day+'/'):
                     file_data_ = 'ecmwf-era5_oper_an_sfc_'
@@ -168,50 +180,50 @@ for day_ in range(int(INIT), num_days+1):
                     h_03 = height[i_modis]
                     s_Z = zsat[i_modis]
                     cloud_mask = cloud_Masks[i_modis]
-                    cloud_mask_flag = rt.bits_stripping(1,2,cloud_mask[0,:,:])
+                    cloud_mask_flag = bits_stripping_services.bits_stripping(1,2,cloud_mask[0,:,:])
                     dimension = h_03.shape[0]
                     dimension_original = dimension
                     latitud = lat_Myd03[i_modis]
                     longitud = lon_Myd03[i_modis]
 
-                    lat_Modis, lon_Modis, mask_land_modis, mask_original_modis = rt.extract_index_image(lat_Myd03[i_modis], lon_Myd03[i_modis], mask_sea_land_modis[i_modis], dimension)
+                    lat_Modis, lon_Modis, mask_land_modis, mask_original_modis = utilitiesUveg.extract_index_image(lat_Myd03[i_modis], lon_Myd03[i_modis], mask_sea_land_modis[i_modis], dimension)
 
-                    ndvi_d = rt.extract_ndvi(lat_Modis, lon_Modis, ndvi_lat, ndvi_lon, ndvi)
+                    ndvi_d = utilitiesUveg.extract_ndvi(lat_Modis, lon_Modis, ndvi_lat, ndvi_lon, ndvi)
                     
                     if ndvi_d.size > 0:
                         print('Process with NDVI')
                     else:
                         continue
 
-                    index_Era, lat, lon = rt.extract_index_modis_and_era(lat_Nc, lon_Nc, lat_Modis, lon_Modis, mask_sea_land_era5)
+                    index_Era, lat, lon = utilitiesUveg.extract_index_modis_and_era(lat_Nc, lon_Nc, lat_Modis, lon_Modis, mask_sea_land_era5)
                     
                     date_era5 = year+month+day
                     
-                    h_ = rt.extract_height(h_03, mask_land_modis, cloud_mask_flag)
+                    h_ = utilitiesUveg.extract_height(h_03, mask_land_modis, cloud_mask_flag)
                     print('Pixeles a procesar:', h_.shape)
 
-                    z = rt.extract_zenith(s_Z, mask_land_modis, cloud_mask_flag)
-                    t_ = rt.extract_temperature(temp_era, index_Era)
-                    he = rt.extract_humidity(hum_E, index_Era)
-                    t2, sk, p2m, q2m = rt.extract_param_2m(t2m, skt, d2m, msl1, index_Era, h_)
+                    z = utilitiesUveg.extract_zenith(s_Z, mask_land_modis, cloud_mask_flag)
+                    t_ = utilitiesUveg.extract_temperature(temp_era, index_Era)
+                    he = utilitiesUveg.extract_humidity(hum_E, index_Era)
+                    t2, sk, p2m, q2m = utilitiesUveg.extract_param_2m(t2m, skt, d2m, msl1, index_Era, h_)
                     dimension_modis_ravel = z.shape[0]
                    
                     datetimes, angles, surftype, surfgeom, s2m, skin, simplecloud, clwscheme, icecloud, \
-                                            zeeman, p, t = rt.create_profiles(dimension_modis_ravel, \
+                                            zeeman, p, t = create_profiles_services.create_profiles(dimension_modis_ravel, \
                                                             z, lat_Modis, lon_Modis, h_, p2m, t2, q2m,  \
                                                             sk, level, t_, year, month, day)
                     path_nc_file = output_path_images_uveg
                     nc_file = net.Dataset(path_nc_file+year+'/'+month+'/'+day+'/'+'TES_'+year+month+day+'_'+date_modis+'_'+toma+'.nc',mode='w',format='NETCDF4')
                     nc_file.close()
                     print('Se ha creado el archivo temporal:', path_nc_file+year+'/'+month+'/'+day+'/'+'TES_'+year+month+day+'_'+date_modis+'_'+toma+'.nc')
-                    bt, radtotal, radup, raddown, tautotal  = rt.call_rttov(input_path_images_rtcoef_rttov12, datetimes, angles, \
+                    bt, radtotal, radup, raddown, tautotal  = call_rttov_services.call_rttov(input_path_images_rtcoef_rttov12, datetimes, angles, \
                                                             surfgeom, surftype, s2m, skin, simplecloud, clwscheme, \
                                                                 icecloud, zeeman, p, t, he)
                     
                     consA, consB, lonOnda29, lonOnda31, lonOnda32, nOnda29, nOnda31, nOnda32, Lbb29,\
-                                                        Lbb31, Lbb32, emissivity, lo = rt.variables(sk)
+                                                        Lbb31, Lbb32, emissivity, lo = processUveg.variables(sk)
                 
-                    Lup_29, Lup_31, Lup_32, Ldown_29, Ldown_31, Ldown_32 = rt.chance_units(consA, consB, bt, radtotal,\
+                    Lup_29, Lup_31, Lup_32, Ldown_29, Ldown_31, Ldown_32 = utilitiesUveg.chance_units(consA, consB, bt, radtotal,\
                                         radup, raddown, tautotal, emissivity,  nOnda29, nOnda31, nOnda32,\
                                             lonOnda29, lonOnda31, lonOnda32, Lbb29, Lbb31, Lbb32)
                     
@@ -219,14 +231,14 @@ for day_ in range(int(INIT), num_days+1):
                     ldown = np.array((Ldown_29,Ldown_31, Ldown_32),dtype = np.float64) 
                     trans = tautotal
                 
-                    radiance, image_rad = rt.modis_02(f_Myd02_hours, hours_list, i_modis, cloud_mask_flag, dimension_original) 
+                    radiance, image_rad = modis_02_Services.modis_02(f_Myd02_hours, hours_list, i_modis, cloud_mask_flag, dimension_original) 
                     radiance = radiance[:,mask_land_modis]
                     
                     ###########TES UVEG###################
-                    Ts, e, BT, rad, R, erad = rt.tes_modis(lo, lup, ldown, trans, radiance, z=z.ravel(), aux = True, recal=False)
+                    Ts, e, BT, rad, R, erad = tes_modis_services.tes_modis(lo, lup, ldown, trans, radiance, z=z.ravel(), aux = True, recal=False)
                     e_original = np.zeros(shape=(3,dimension_modis_ravel),dtype = np.float64)
                     e_original[:,:] = e[:,:]
-                    e_mod = rt.recl_e(e, dimension_modis_ravel)
+                    e_mod = recl_services.recl_e(e, dimension_modis_ravel)
                     e31_fvc, e32_fvc = rt.FVC(ndvi_d.ravel(), e_mod[1,:], e_mod[2,:])
                     
                     #*****************Errors***************
@@ -268,20 +280,20 @@ for day_ in range(int(INIT), num_days+1):
                     ldown2[:,:] = ldown - err_ldown
                     
                     ###########TES UVEG###################
-                    Ts1, e1, rad1, BT1,  R1, erad1 = rt.tes_modis(lo, lup, ldown1, trans, radiance1, z=z.ravel(), aux=False, recal=False)
-                    Ts2, e2, rad2, BT2,  R2, erad2 = rt.tes_modis(lo, lup, ldown2, trans, radiance2, z=z.ravel(), aux=False, recal=False)
+                    Ts1, e1, rad1, BT1,  R1, erad1 = tes_modis_services.tes_modis(lo, lup, ldown1, trans, radiance1, z=z.ravel(), aux=False, recal=False)
+                    Ts2, e2, rad2, BT2,  R2, erad2 = tes_modis_services.tes_modis(lo, lup, ldown2, trans, radiance2, z=z.ravel(), aux=False, recal=False)
             
-                    e1_mod = rt.recl_e(e1, dimension_modis_ravel)
-                    e2_mod = rt.recl_e(e2, dimension_modis_ravel)
+                    e1_mod = recl_services.recl_e(e1, dimension_modis_ravel)
+                    e2_mod = recl_services.recl_e(e2, dimension_modis_ravel)
             
-                    e1_31_fvc, e1_32_fvc = rt.FVC(ndvi_d.ravel(), e1_mod[1,:], e1_mod[2,:])
-                    e2_31_fvc, e2_32_fvc = rt.FVC(ndvi_d.ravel(), e2_mod[1,:], e2_mod[2,:])
+                    e1_31_fvc, e1_32_fvc = FCV_services.FVC(ndvi_d.ravel(), e1_mod[1,:], e1_mod[2,:])
+                    e2_31_fvc, e2_32_fvc = FCV_services.FVC(ndvi_d.ravel(), e2_mod[1,:], e2_mod[2,:])
             
-                    rad_recal_e1 = rt.sw(lo, radiance1, dimension_modis_ravel, e1[0,:], e1_31_fvc, e1_32_fvc, ldown1, R1, trans, Ts1, aux = False, aux1 = True)
-                    rad_recal_e2 = rt.sw(lo, radiance2, dimension_modis_ravel, e2[0,:], e2_31_fvc, e2_32_fvc, ldown2, R2, trans, Ts2, aux = False, aux1 = True)
+                    rad_recal_e1 = sw_services.sw(lo, radiance1, dimension_modis_ravel, e1[0,:], e1_31_fvc, e1_32_fvc, ldown1, R1, trans, Ts1, aux = False, aux1 = True)
+                    rad_recal_e2 = sw_services.sw(lo, radiance2, dimension_modis_ravel, e2[0,:], e2_31_fvc, e2_32_fvc, ldown2, R2, trans, Ts2, aux = False, aux1 = True)
                     ###########TES UVEG###################
-                    Ts1_, e1_, rad1_, BT1_,  R1_, erad1_ = rt.tes_modis(lo, lup, ldown1, trans, rad_recal_e1, z=z.ravel(), aux=False, recal=False)
-                    Ts2_, e2_, rad2_, BT2_,  R2_, erad2_ = rt.tes_modis(lo, lup, ldown2, trans, rad_recal_e2, z=z.ravel(), aux=False, recal=False)
+                    Ts1_, e1_, rad1_, BT1_,  R1_, erad1_ = tes_modis_services.tes_modis(lo, lup, ldown1, trans, rad_recal_e1, z=z.ravel(), aux=False, recal=False)
+                    Ts2_, e2_, rad2_, BT2_,  R2_, erad2_ = tes_modis_services.tes_modis(lo, lup, ldown2, trans, rad_recal_e2, z=z.ravel(), aux=False, recal=False)
             
                     errTs[:] = np.abs((Ts1_-Ts2_)/2)
                     err_e29[:] = np.abs((e1_[0,:]-e2_[0,:])/2)
@@ -291,29 +303,29 @@ for day_ in range(int(INIT), num_days+1):
                     e_29_original = e_original[0,:]
                     
                     #******Split Window*****
-                    rad_recal = rt.sw(lo, radiance, dimension_modis_ravel, e_29_original, e31_fvc, e32_fvc, ldown, R, trans, Ts, aux = True, aux1 = True)
+                    rad_recal = sw_services.sw(lo, radiance, dimension_modis_ravel, e_29_original, e31_fvc, e32_fvc, ldown, R, trans, Ts, aux = True, aux1 = True)
                     ###########TES UVEG###################
-                    Ts_1, e_1, BT_, rad_1, R_1, erad_1 = rt.tes_modis(lo, lup, ldown, trans, rad_recal, z=z.ravel(), aux=False, recal=True)
+                    Ts_1, e_1, BT_, rad_1, R_1, erad_1 = tes_modis_services.tes_modis(lo, lup, ldown, trans, rad_recal, z=z.ravel(), aux=False, recal=True)
                     Ts_1 = np.round(Ts_1, 2)
-                    Ts_1_int = rt.packed_value(Ts_1, 0.0, 0.02, data_type=np.uint16)
+                    Ts_1_int = packed_value_services.packed_value(Ts_1, 0.0, 0.02, data_type=np.uint16)
 
                     e_1 = np.round(e_1, 3)
-                    e_1_int = rt.packed_value(e_1, 0.49, 0.002, data_type=np.uint8)
+                    e_1_int = packed_value_services.packed_value(e_1, 0.49, 0.002, data_type=np.uint8)
                     
                     errTs = np.round(errTs, 2)
-                    errTs_int = rt.packed_value(errTs, 0.0, 0.04, data_type=np.uint8)                    
+                    errTs_int = packed_value_services.packed_value(errTs, 0.0, 0.04, data_type=np.uint8)                    
                     
                     err_e29 = np.round(err_e29, 4)
-                    err_e29_int = rt.packed_value(err_e29, 0.0, 0.0001, data_type=np.uint16)
+                    err_e29_int = packed_value_services.packed_value(err_e29, 0.0, 0.0001, data_type=np.uint16)
                     
                     err_e31 = np.round(err_e31, 4)
-                    err_e31_int = rt.packed_value(err_e31, 0.0, 0.0001, data_type=np.uint16)
+                    err_e31_int = packed_value_services.packed_value(err_e31, 0.0, 0.0001, data_type=np.uint16)
                     
                     err_e32 = np.round(err_e32, 4)
-                    err_e32_int = rt.packed_value(err_e32, 0.0, 0.0001, data_type=np.uint16)
+                    err_e32_int = packed_value_services.packed_value(err_e32, 0.0, 0.0001, data_type=np.uint16)
                     
                     z = np.round(z, 2)
-                    z_int = rt.packed_value(z, 0.0, 0.5, data_type=np.uint8)
+                    z_int = packed_value_services.packed_value(z, 0.0, 0.5, data_type=np.uint8)
 
                     latitud_int = (latitud*10000).astype(np.int32)
                     longitud_int = (longitud*10000).astype(np.int32)
@@ -322,10 +334,10 @@ for day_ in range(int(INIT), num_days+1):
                         print('Archivo borrado')
                     else:
                         print('No se ha borrado el archivo')
-                    rt.create_nc_outfile(output_path_images_uveg, year, month, day, date_modis, dimension_original,\
+                    create_nc_outfile_services.create_nc_outfile(output_path_images_uveg, year, month, day, date_modis, dimension_original,\
                                     latitud_int, longitud_int, Ts_1_int, e_1_int, mask_original_modis, toma,  errTs_int, err_e29_int, err_e31_int, err_e32_int, z_int)
                     
-                    rt.write_csv_files(output_path_images_uveg+year+'/'+month+'/', 'TES_'+year+month+day+'_'+date_modis+'_'+toma+'.nc', year, month)
+                    utilitiesUveg.write_csv_files(output_path_images_uveg+year+'/'+month+'/', 'TES_'+year+month+day+'_'+date_modis+'_'+toma+'.nc', year, month)
                     
                     elapsed_time_0 = time.time() - start_time_0
                     print(' Time process file: ',elapsed_time_0)

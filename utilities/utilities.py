@@ -218,7 +218,52 @@ class utilitiesUveg():
         except ValueError:
           print("Error extract ndvi clip")
 
+    def extract_vars2m_era5(cls, path_input, year, month, day, mask_sea_land_era5, hours, hours_list, file_data):
+        ''' 
+        Resum: Function extract vars 2m temperature, skin temperature, dew point, pressure 2m
+        
+        Params: files (t_2m, skin_T, d_2m, msl, mask_sea_land)
+        
+        Output Matrix-> t2m, skt, d2m, msl1, level
+        
+        Call example: t2m, skt, d2m, msl1, level = extract_vars2m_era5(t_2m, skin_T, d_2m, msl, mask_sea_land)
+        '''
+        try:
+            
+            #===== Añadimos la ruta de los archivos ERA5 descargados de CEDA, a 2m
+            skin_T = net.Dataset(path_input+year+'/'+month+'/'+day+'/'+file_data+year+month+day+hours[hours_list]+'.skt.nc','r')
+            t_2m = net.Dataset(path_input+year+'/'+month+'/'+day+'/'+file_data+year+month+day+hours[hours_list]+'.2t.nc','r')
+            d_2m = net.Dataset(path_input+year+'/'+month+'/'+day+'/'+file_data+year+month+day+hours[hours_list]+'.2d.nc','r')
+            msl = net.Dataset(path_input+year+'/'+month+'/'+day+'/'+file_data+year+month+day+hours[hours_list]+'.msl.nc','r')
+        
+            #=====Temperatura a 2m extraida del perfil .nc a 2m CEDA, shape (1 ,721 , 1440)
+            t2m = t_2m.variables['t2m'][:]   # shape (1 ,721 , 1440) Kelvin
+            skt = skin_T.variables['skt'][:] # shape (1 ,721 , 1440) Kelvin
+            d2m = d_2m.variables['d2m'][:]   # shape (1 ,721 , 1440) Kelvin
+            msl1 = msl.variables['msl'][:]   # shape (1 ,721 , 1440) Pa
+            
+            t2m = np.where(mask_sea_land_era5==1,t2m,-999)
+            skt = np.where(mask_sea_land_era5==1,skt,-999)
+            d2m = np.where(mask_sea_land_era5==1,d2m,-999)
+            msl1 = np.where(mask_sea_land_era5==1,msl1,-999)
+            print(path_input+year+'/'+month+'/'+day+'/'+file_data+year+month+day+hours[hours_list]+'.skt.nc','r')
 
+            #===== Pressure levels, 137 pressure levels according to U.S. Standard Atmosphere, 1976 (hpa)
+            level = np.array([0.0200,0.0310,0.0467,0.0683,0.0975,0.1361,0.1861,0.2499,0.3299,0.4288,0.5496,0.6952,0.8690,1.074,1.314,1.593,1.913,2.280,2.695,3.164,3.690,4.276,4.926,5.644,6.433,7.297,8.240,9.263,10.372,11.569,12.856,14.238,15.716,17.295,18.975,20.761,22.654,24.658,26.774,29.004,31.351,33.817,36.405,39.115,41.949,44.908,47.992,51.199,54.530,57.983,61.561,65.270,69.119,73.119,77.281,81.618,86.145,90.877,95.828,101.005,106.415,112.068,117.971,124.134,130.564,137.270,144.262,151.549,159.140,167.045,175.273,183.834,192.739,201.997,211.619,221.615,231.995,242.772,253.955,265.556,277.585,290.055,302.976,316.361,330.220,344.566,359.411,374.767,390.645,407.058,424.019,441.540,459.632,478.310,497.585,517.420,537.720,558.343,579.193,600.167,621.162,642.076,662.808,683.262,703.347,722.980,742.086,760.600,778.466,795.640,812.085,827.776,842.696,856.838,870.200,882.791,894.622,905.712,916.082,925.757,934.767,943.140,950.908,958.104,964.758,970.905,976.574,981.797,986.604,991.023,995.082,998.808,1002.225,1005.356,1008.224,1010.849,1013.250],dtype=float)
+            level = level[[15, 45, 58, 66, 72, 77, 81, 85, 88, 91, 94, 97, 99, 102 ,104, 106 ,110, 112 ,114, 116, 118, 121, 124, 129,136]]
+        
+    
+            skin_T.close()
+            t_2m.close()
+            d_2m.close()
+            msl.close()
+            
+            return t2m, skt, d2m, msl1, level
+              
+        except ValueError:
+            print("Error read multiple files 2m ERA-5")
+
+            
     def match_myd03_myd021_myd35(f_Myd03 , f_Myd02, f_Myd35):
         ''' 
         Resum: Function match files Myd03, Myd021km and Myd35 
