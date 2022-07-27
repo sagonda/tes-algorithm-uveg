@@ -131,6 +131,9 @@ print('Process year:', year, 'month:', month)
 num_days = monthrange(int(year), int(month))[1]
 print('INIT:', INIT)
 
+# ----------Read NDVI----------
+ndvi_lat, ndvi_lon, ndvi = readerUveg.read_ndvi_file(year, month, input_path_images_ndvi)
+
 for day_ in range(int(INIT), 5):  # num_days+1):
 
     try:
@@ -143,8 +146,7 @@ for day_ in range(int(INIT), 5):  # num_days+1):
         reader = readerUveg(year, month, day, input_path_images_ndvi, input_path_images_collection61,
                             input_path_images_MYD021KM, input_path_images_MYD35_L2, output_path_images_uveg)
 
-        # ----------Read NDVI----------
-        ndvi_lat, ndvi_lon, ndvi = reader.read_ndvi_file()
+        
 
         # ***********init time********
         start_time = time.time()
@@ -205,8 +207,8 @@ for day_ in range(int(INIT), 5):  # num_days+1):
                 print(e)
 
             print("ok")
-
-            for i_modis in range(rep):
+            print(rep)
+            for i_modis in range(2):#range(rep):
                 try:
                     import time
                     # ***********init time********

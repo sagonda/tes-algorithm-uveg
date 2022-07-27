@@ -16,8 +16,8 @@ class readerUveg():
         self.path_files_Myd021 = path_files_Myd021
         self.path_files_Myd35 = path_files_Myd35
         self.path_files_CSV = path_files_CSV
-
-    def read_ndvi_file(self):
+    @classmethod
+    def read_ndvi_file(cls,year, month, path_files_nvdi):
         '''
         Resum: Function read ndvi file
         
@@ -34,7 +34,7 @@ class readerUveg():
             print('Read files NDVI.................')
             
             # Read files
-            path_ndvi = self.path_files_nvdi + self.year + '/' + self.month + '/'
+            path_ndvi = path_files_nvdi + year + '/' + month + '/'
             data = net.Dataset(path_ndvi + 'out.nc','r')
             
             # Read variables
