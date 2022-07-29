@@ -1,4 +1,5 @@
 import numpy as np
+
 from utilities.utilities import utilitiesUveg
  
 class tes_modis_services():
@@ -12,8 +13,6 @@ class tes_modis_services():
         self.z = z
         self.aux = aux
         self.recal = recal
-
-
 
     def tes_modis(self):
         # Algorith TES
@@ -70,11 +69,13 @@ class tes_modis_services():
             minimo[:] = 10.0
            
             beta[:] = [e[i,:]/emedia for i in range(3)]
+
             maximo[:] = np.max(beta[:,:], axis=0) 
             minimo[:] = np.min(beta[:,:], axis=0) 
         
             MMD = maximo-minimo              
             emin = c1+c2*(MMD**c3)
+
             e[:] = [beta[i,:]*(emin/minimo) for i in range(3)]# calcular para las tres bandas
         
             R[:] = [rad[i,:] - (1-e[i,:])*self.ldown[i,:] for i in range(3)]
@@ -91,10 +92,17 @@ class tes_modis_services():
                 e[1:,:] = [R[i,:]/BT[i,:] for i in range(2)]
 
             
+
             #***Error rad ****
             erad = np.empty(shape=(3,dimension),dtype = np.float64)
             eq1 = np.empty(shape=(3,dimension),dtype = np.float64)
-            eq2 = np.empty(shape=(3,dimension),dtype = np.float64)
+            eq2 = np.empty(shape=(3,dimension),dtype = np.float64)         
+            
+            eq1[:,:] = [d1_1[i]*self.trans[i,:]+d2_1[i]*self.trans[i,:]**2+d3_1[i]*self.z[:]+d4_1[i]*self.z[:]**2+d5_1[i]*self.trans[i,:]*self.z[:]+d6_1[i] for i in range(3)]
+            eq2[:,:] = [f1_1[i]*self.lup[i,:]+f2_1[i]*self.lup[i,:]**2+f3_1[i]*self.z[:]+f4_1[i]*self.z[:]**2+f5_1[i]*self.lup[i,:]*self.z[:]+f6_1[i] for i in range(3)]
+            erad[:,:]=[(((0.003*self.radiance[i,:]/self.trans[i,:])**2+(eq2[i,:]/self.trans[i,:])**2+(eq1[i,:]*((self.radiance[i,:]-self.lup[i,:]))/(self.trans[i,:]**2))**2)**0.5) for i in range(3)]
+           
+            return Ts.ravel(), e, BT, rad, R, erad
             
             #***0.03  value ***
             d1_1 = [0.016117854,0.028460421,0.026695870]

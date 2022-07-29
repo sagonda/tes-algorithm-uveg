@@ -1,6 +1,7 @@
 import numpy as np
 
 class bits_stripping_services():
+
     def __init__(self, value):
 
         self.value = value

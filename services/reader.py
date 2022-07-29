@@ -1,10 +1,9 @@
 import netCDF4 as net
 import numpy as np
 import glob
-from operator import itemgetter
 import traceback
 
-
+from operator import itemgetter
 
 class readerUveg():
     def __init__(self, year, month, day, path_files_nvdi, path_files_Myd03, path_files_Myd021, path_files_Myd35, path_files_CSV):
@@ -16,8 +15,10 @@ class readerUveg():
         self.path_files_Myd021 = path_files_Myd021
         self.path_files_Myd35 = path_files_Myd35
         self.path_files_CSV = path_files_CSV
+
     @classmethod
     def read_ndvi_file(cls,year, month, path_files_nvdi):
+
         '''
         Resum: Function read ndvi file
         
@@ -34,7 +35,9 @@ class readerUveg():
             print('Read files NDVI.................')
             
             # Read files
+
             path_ndvi = path_files_nvdi + year + '/' + month + '/'
+
             data = net.Dataset(path_ndvi + 'out.nc','r')
             
             # Read variables
@@ -128,7 +131,6 @@ class readerUveg():
     
         except ValueError:
             print('Error load myd35')
-
 
     @staticmethod
     def match_myd03_myd021_myd35(f_Myd03, f_Myd02, f_Myd35):
@@ -304,7 +306,6 @@ class readerUveg():
         
         Call example: 
         '''
-         
         try:
             cero_hour = ['0000', '0005', '0010', '0015', '0020', '0025', '0030']        
                     
@@ -357,8 +358,7 @@ class readerUveg():
             
             list_total_myd03 = [i.split('.')[2] for i in f_Myd03] #devulve lista de horas
             list_total_myd02 = [j.split('.')[2] for j in f_Myd02]
-            list_total_myd35 = [i.split('.')[2] for i in f_Myd35]
-            
+            list_total_myd35 = [i.split('.')[2] for i in f_Myd35]        
             
             cero = [index for index, item in enumerate(list_total_myd03) if item in cero_hour]  
             one = [index for index, item in enumerate(list_total_myd03) if item in one_hour]           
@@ -384,6 +384,7 @@ class readerUveg():
             twenty_one = [index for index, item in enumerate(list_total_myd03) if item in twenty_one_hour]
             twenty_two = [index for index, item in enumerate(list_total_myd03) if item in twenty_two_hour]
             twenty_three = [index for index, item in enumerate(list_total_myd03) if item in twenty_three_hour]
+
             # print(cero)
             # print(np.array(self.read_myd03_files())) 
             #f_Myd03
@@ -412,11 +413,13 @@ class readerUveg():
             twenty_one_Myd03 = list(np.array(f_Myd03)[twenty_one])
             twenty_two_Myd03 = list(np.array(f_Myd03)[twenty_two])
             twenty_three_Myd03 = list(np.array(f_Myd03)[twenty_three])
+
             f_Myd03_hours = [cero_Myd03, one_Myd03, two_Myd03, three_Myd03, four_Myd03, five_Myd03, six_Myd03, seven_Myd03
                             , eight_Myd03, nine_Myd03, ten_Myd03, eleven_Myd03, twelve_Myd03, thirteen_Myd03,
                             fourteen_Myd03, fifteen_Myd03, sixteen_Myd03, seventeen_Myd03, eighteen_Myd03, 
                             nineteen_Myd03, twenty_Myd03, twenty_one_Myd03, twenty_two_Myd03, twenty_three_Myd03]
             # devulve lista de listas por horas
+
             #, f_Myd02
            
             cero_Myd02 = list(np.array(f_Myd02)[cero])
@@ -443,11 +446,13 @@ class readerUveg():
             twenty_one_Myd02 = list(np.array(f_Myd02)[twenty_one])
             twenty_two_Myd02 = list(np.array(f_Myd02)[twenty_two])
             twenty_three_Myd02 = list(np.array(f_Myd02)[twenty_three])
+
             f_Myd02_hours = [cero_Myd02, one_Myd02, two_Myd02, three_Myd02, four_Myd02, five_Myd02, six_Myd02, seven_Myd02
                 , eight_Myd02, nine_Myd02, ten_Myd02, eleven_Myd02, twelve_Myd02, thirteen_Myd02,
                 fourteen_Myd02, fifteen_Myd02, sixteen_Myd02, seventeen_Myd02, eighteen_Myd02, 
                 nineteen_Myd02, twenty_Myd02, twenty_one_Myd02, twenty_two_Myd02, twenty_three_Myd02]
             
+
             #f_Myd35
             cero_Myd35 = list(np.array(f_Myd35)[cero])
             one_Myd35 = list(np.array(f_Myd35)[one])
@@ -473,6 +478,7 @@ class readerUveg():
             twenty_one_Myd35 = list(np.array(f_Myd35)[twenty_one])
             twenty_two_Myd35 = list(np.array(f_Myd35)[twenty_two])
             twenty_three_Myd35 = list(np.array(f_Myd35)[twenty_three])
+
             f_Myd35_hours = [cero_Myd35, one_Myd35, two_Myd35, three_Myd35, four_Myd35, five_Myd35, six_Myd35, seven_Myd35
                 , eight_Myd35, nine_Myd35, ten_Myd35, eleven_Myd35, twelve_Myd35, thirteen_Myd35,
                 fourteen_Myd35, fifteen_Myd35, sixteen_Myd35, seventeen_Myd35, eighteen_Myd35, 
@@ -489,7 +495,17 @@ class readerUveg():
         except OSError as err:
             print("OS error: {0}".format(err))
 
-
+    def read_csv_files(self):  
+        try:
+           # open the file in the write mode
+           with open(self.path_files_CSV + self.year + self.month +'.csv', 'r') as f:
+               line = f.readlines()
+               line = line[-1]
+               self.day = line[10:12]
+               hour = line[13:15] + '00'
+               print('day:',self.day,'hour:',hour)
+               
+           return self.day, hour               
     def extract_ndvi(lat_Modis, lon_Modis, ndvi_lat, ndvi_lon, ndvi):
         ''' 
         Resum: This function extracts a clipping of the NDVI matrix based on the input modis image

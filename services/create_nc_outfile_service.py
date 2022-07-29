@@ -1,5 +1,6 @@
 import netCDF4 as net
 import numpy as np
+
 from services.new_array_service import new_array_services
 
 class create_nc_outfile_services():
@@ -111,6 +112,15 @@ class create_nc_outfile_services():
             # write data                       
             lat[:] = self.latitud
             lon[:] = self.longitud
+            lst[:] = UvegProcess.new_array(self.Ts, mask1_, self.dimension_original, data_type=np.uint16)
+            e29[:] = UvegProcess.new_array(self.e[0,:], mask1_, self.dimension_original, data_type=np.uint8)
+            e31[:] = UvegProcess.new_array(self.e[1,:], mask1_, self.dimension_original, data_type=np.uint8)
+            e32[:] = UvegProcess.new_array(self.e[2,:], mask1_, self.dimension_original, data_type=np.uint8)
+            lst_error[:] = UvegProcess.new_array(self.errTs, mask1_, self.dimension_original, data_type=np.uint8)
+            e29_error[:] = UvegProcess.new_array(self.err_e29, mask1_, self.dimension_original, data_type=np.uint16)
+            e31_error[:] = UvegProcess.new_array(self.err_e31, mask1_, self.dimension_original, data_type=np.uint16)
+            e32_error[:] = UvegProcess.new_array(self.err_e32, mask1_, self.dimension_original, data_type=np.uint16)
+            z_[:] = UvegProcess.new_array(self.z, mask1_, self.dimension_original, data_type=np.uint8)
             lst[:] = new_array_services(self.Ts, mask1_, self.dimension_original, data_type=np.uint16).new_array()
             e29[:] = new_array_services(self.e[0,:], mask1_, self.dimension_original, data_type=np.uint8).new_array()
             e31[:] = new_array_services(self.e[1,:], mask1_, self.dimension_original, data_type=np.uint8).new_array()
