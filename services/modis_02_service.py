@@ -9,6 +9,7 @@ class modis_02_Services():
         self.i_modis = i_modis
         self.cloud_mask_flag = cloud_mask_flag
         self.dimension_original = dimension_original
+
     def modis_02(self):
         ''' 
         Resum: Function extract vars product myd021km

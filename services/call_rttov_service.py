@@ -1,5 +1,7 @@
 import numpy as np
 
+from rttov_wrapper_f2py import *
+
 class call_rttov_services():
 
     def __init__(self, path_Rttov_coef, datetimes, angles, surfgeom, surftype, s2m, skin, simplecloud, clwscheme, icecloud, zeeman, p, t, he):
@@ -65,6 +67,8 @@ class call_rttov_services():
                         'verbose_wrapper 0 '         \
                         'nthreads 2 '                \
                         'nprofs_per_call 30000 '       \
+                        'nthreads 1 '                \
+                        'nprofs_per_call 10 '       \
                         'check_opts 1 '              \
                         'store_trans 1 '             \
                         'store_rad 1 '               \

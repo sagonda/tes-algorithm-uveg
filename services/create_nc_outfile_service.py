@@ -1,6 +1,8 @@
 import netCDF4 as net
 import numpy as np
 
+from services.new_array_service import new_array_services
+
 class create_nc_outfile_services():
 
     def __init__(self, path_output, year, month, day, date_modis, dimension_original,\
@@ -119,6 +121,15 @@ class create_nc_outfile_services():
             e31_error[:] = UvegProcess.new_array(self.err_e31, mask1_, self.dimension_original, data_type=np.uint16)
             e32_error[:] = UvegProcess.new_array(self.err_e32, mask1_, self.dimension_original, data_type=np.uint16)
             z_[:] = UvegProcess.new_array(self.z, mask1_, self.dimension_original, data_type=np.uint8)
+            lst[:] = new_array_services(self.Ts, mask1_, self.dimension_original, data_type=np.uint16).new_array()
+            e29[:] = new_array_services(self.e[0,:], mask1_, self.dimension_original, data_type=np.uint8).new_array()
+            e31[:] = new_array_services(self.e[1,:], mask1_, self.dimension_original, data_type=np.uint8).new_array()
+            e32[:] = new_array_services(self.e[2,:], mask1_, self.dimension_original, data_type=np.uint8).new_array()
+            lst_error[:] = new_array_services(self.errTs, mask1_, self.dimension_original, data_type=np.uint8).new_array()
+            e29_error[:] = new_array_services(self.err_e29, mask1_, self.dimension_original, data_type=np.uint16).new_array()
+            e31_error[:] = new_array_services(self.err_e31, mask1_, self.dimension_original, data_type=np.uint16).new_array()
+            e32_error[:] = new_array_services(self.err_e32, mask1_, self.dimension_original, data_type=np.uint16).new_array()
+            z_[:] = new_array_services(self.z, mask1_, self.dimension_original, data_type=np.uint8).new_array()
             
             print('The image has been saved correctly!!!')
     

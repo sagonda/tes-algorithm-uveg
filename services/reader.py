@@ -1,7 +1,9 @@
 import netCDF4 as net
 import numpy as np
 import glob
+import traceback
 
+from operator import itemgetter
 
 class readerUveg():
     def __init__(self, year, month, day, path_files_nvdi, path_files_Myd03, path_files_Myd021, path_files_Myd35, path_files_CSV):
@@ -14,7 +16,9 @@ class readerUveg():
         self.path_files_Myd35 = path_files_Myd35
         self.path_files_CSV = path_files_CSV
 
-    def read_ndvi_file(self):
+    @classmethod
+    def read_ndvi_file(cls,year, month, path_files_nvdi):
+
         '''
         Resum: Function read ndvi file
         
@@ -31,7 +35,9 @@ class readerUveg():
             print('Read files NDVI.................')
             
             # Read files
-            path_ndvi = self.path_files_nvdi + self.year + '/' + self.month + '/'
+
+            path_ndvi = path_files_nvdi + year + '/' + month + '/'
+
             data = net.Dataset(path_ndvi + 'out.nc','r')
             
             # Read variables
@@ -126,8 +132,171 @@ class readerUveg():
         except ValueError:
             print('Error load myd35')
 
+    @staticmethod
+    def match_myd03_myd021_myd35(f_Myd03, f_Myd02, f_Myd35):
+        ''' 
+        Resum: Function match files Myd03, Myd021km and Myd35 
+        
+        Params: (list_myd03 , list_myd021, list_myd35)
+        
+        Output list-> matching elements myd03, myd021km and myd35
+        
+        Call example: list_myd03, list_myd021, list_myd35 = match_myd03_myd021_myd35(list_myd03 , list_myd021, list_myd35)
+         '''
+        # f_Myd03 = self.read_myd03_files()
+        # f_Myd02 = self.read_myd021_files()
+        # file_myd35 = self.read_myd35_files()
+        
+        try:  
+            
+            list_name_file_myd03 = [i.split('.')[-5:-3] for i in f_Myd03]
+            list_name_file_myd02 = [j.split('.')[-5:-3] for j in f_Myd02]  
+    
+            list_name_file_myd03 = [''.join(list_name_file_myd03[i]) for i in range(len(list_name_file_myd03))]
+            list_name_file_myd02 = [''.join(list_name_file_myd02[i]) for i in range(len(list_name_file_myd02))]
+            
+            list_name_file_myd03 = [i[1:] for i in list_name_file_myd03]
+            list_name_file_myd02 = [i[1:] for i in list_name_file_myd02]
+            
+            #print('Have found',len(list_name_file_myd03),'MYD03 MODIS PRODUCT')
+            #print('Have found',len(list_name_file_myd02),'MYD021KM MODIS PRODUCT')
+            #print('##################################################')
+           
+            try:
+                
+                matrix_name_file_myd03 = np.array(list_name_file_myd03)
+                matrix_name_file_myd02 = np.array(list_name_file_myd02)
+                
+                match_files_index_myd03 = np.intersect1d(matrix_name_file_myd03, matrix_name_file_myd02,  return_indices=True)
+                index_03 = list(match_files_index_myd03[1])
+                
+                match03 = (list(itemgetter(*index_03)(f_Myd03)))
+                f_Myd03 = match03 #devulve lista de rutas  de archivos matcheados
+                #print(f_Myd03)
+                #print('MYD03 in MYD021KM',len(f_Myd03),'Matching elements have been found')
+            
+    
+                matrix_name_file_myd03 = np.array(list_name_file_myd03)
+                matrix_name_file_myd02 = np.array(list_name_file_myd02)
+                
+                match_files_index_myd02 = np.intersect1d(matrix_name_file_myd02, matrix_name_file_myd03,  return_indices=True)
+                index_02 = list(match_files_index_myd02[1])
+                
+                match02 = (list(itemgetter(*index_02)(f_Myd02)))
+                f_Myd02 = match02 #devulve lista de rutas  de archivos matcheados
+                #print(f_Myd02)
+                
+                # file_myd03 = [i.split('.')[-5:-3] for i in f_Myd03]
+                # file_myd03 = [''.join(file_myd03[i]) for i in range(len(file_myd03))]
+                # file_myd03 = [i[1:] for i in file_myd03]
+                # file_myd03 = np.array(file_myd03) # devulve un string con fecha, año, semana, dia
+                #print(file_myd03)
+            except Exception:
+                print(traceback.format_exc())
+                
+            
+            if len(f_Myd03) >= len(f_Myd35):
+    
+                option3 = 3                
+                file_myd03 = [i.split('.')[-5:-3] for i in f_Myd03]
+                file_myd35 = [j.split('.')[-5:-3] for j in f_Myd35]
+                               
+                file_myd03 = [''.join(file_myd03[i]) for i in range(len(file_myd03))]
+                file_myd35 = [''.join(file_myd35[i]) for i in range(len(file_myd35))]
+                
+                file_myd03 = [i[1:] for i in file_myd03]
+                file_myd35 = [i[1:] for i in file_myd35]
+       
+                file_myd03 = np.array(file_myd03)
+                file_myd35 = np.array(file_myd35)
+                
+                match_files_index_myd03 = np.intersect1d(file_myd03, file_myd35, return_indices=True)
+                index_03_files = list(match_files_index_myd03[1])
+                
+                match_myd03_files = (list(itemgetter(*index_03_files)(f_Myd03)))
+                         
+                f_Myd03 = match_myd03_files
+                f_Myd35 = f_Myd35
+                f_Myd02 = f_Myd02                
+    
+            if len(f_Myd35) >= len(f_Myd03):
+    
+                option4 = 4
+                file_myd03 = [i.split('.')[-5:-3] for i in f_Myd03]
+                file_myd35 = [j.split('.')[-5:-3] for j in f_Myd35]
+                
+                
+                file_myd03 = [''.join(file_myd03[i]) for i in range(len(file_myd03))]
+                file_myd35 = [''.join(file_myd35[i]) for i in range(len(file_myd35))]
+                
+                file_myd35 = [i[1:] for i in file_myd35]
+                file_myd03 = [i[1:] for i in file_myd03]
+        
+                file_myd03 = np.array(file_myd03)
+                file_myd35 = np.array(file_myd35)
+                
+                match_files_index_myd35 = np.intersect1d(file_myd35, file_myd03, return_indices=True)
+                index_21 = list(match_files_index_myd35[1])
+                
+                match_myd35 = (list(itemgetter(*index_21)(f_Myd35)))
+            
+                f_Myd03 = f_Myd03
+                f_Myd35 = match_myd35
+                f_Myd02 = f_Myd02
+                
+                file_myd03 = [i.split('.')[-5:-3] for i in f_Myd03]
+                file_myd02 = [j.split('.')[-5:-3] for j in f_Myd02]
+                file_myd35 = [j.split('.')[-5:-3] for j in f_Myd35]
+                               
+                file_myd03 = [''.join(file_myd03[i]) for i in range(len(file_myd03))]
+                file_myd02 = [''.join(file_myd02[i]) for i in range(len(file_myd02))]
+                file_myd35 = [''.join(file_myd35[i]) for i in range(len(file_myd35))]
+                
+                file_myd03 = [i[1:] for i in file_myd03]
+                file_myd02 = [i[1:] for i in file_myd02]
+                file_myd35 = [i[1:] for i in file_myd35]                 
+            
+            if len(f_Myd02) >= len(f_Myd35):
+    
+                option5 = 5
+                file_myd02 = [i.split('.')[-5:-3] for i in f_Myd02]
+                file_myd35 = [j.split('.')[-5:-3] for j in f_Myd35]
+                               
+                file_myd02 = [''.join(file_myd02[i]) for i in range(len(file_myd02))]
+                file_myd35 = [''.join(file_myd35[i]) for i in range(len(file_myd35))]
+                
+                file_myd02 = [i[1:] for i in file_myd02]
+                file_myd35 = [i[1:] for i in file_myd35]
+        
+                file_myd02 = np.array(file_myd02)
+                file_myd35 = np.array(file_myd35)
+                
+                match_files_index_myd02 = np.intersect1d(file_myd02, file_myd35, return_indices=True)
+                index_02_files = list(match_files_index_myd02[1])
+                
+                match_myd02_files = (list(itemgetter(*index_02_files)(f_Myd02)))
+            
+                f_Myd02 = match_myd02_files
+                f_Myd35 = f_Myd35
+                f_Myd03 = f_Myd03
 
-    def read_match_files(self):
+            print('Files MYD03: ',len(f_Myd03))
+            print('Files myd35: ',len(f_Myd35))
+            print('Files MYD02: ',len(f_Myd02))
+
+            print(f_Myd03, f_Myd02,f_Myd35)
+
+            return f_Myd03, f_Myd02, f_Myd35
+            
+        except Exception:
+            print(traceback.format_exc())
+
+
+    
+
+
+    
+    def read_match_files(self,f_Myd03, f_Myd02, f_Myd35):
         ''' 
         Resum: 
         
@@ -137,7 +306,6 @@ class readerUveg():
         
         Call example: 
         '''
-        
         try:
             cero_hour = ['0000', '0005', '0010', '0015', '0020', '0025', '0030']        
                     
@@ -188,10 +356,9 @@ class readerUveg():
             twenty_three_hour = ['2235', '2240', '2245', '2250', '2255', '2300', '2305', '2310', '2315', '2320', '2325', '2330',
                                 '2335', '2340', '2345', '2350', '2355']
             
-            list_total_myd03 = [i.split('.')[2] for i in self.read_myd03_files] #devulve lista de horas
-            list_total_myd02 = [j.split('.')[2] for j in self.read_myd021_files]
-            list_total_myd35 = [i.split('.')[2] for i in self.read_myd35_files]
-            
+            list_total_myd03 = [i.split('.')[2] for i in f_Myd03] #devulve lista de horas
+            list_total_myd02 = [j.split('.')[2] for j in f_Myd02]
+            list_total_myd35 = [i.split('.')[2] for i in f_Myd35]        
             
             cero = [index for index, item in enumerate(list_total_myd03) if item in cero_hour]  
             one = [index for index, item in enumerate(list_total_myd03) if item in one_hour]           
@@ -217,90 +384,101 @@ class readerUveg():
             twenty_one = [index for index, item in enumerate(list_total_myd03) if item in twenty_one_hour]
             twenty_two = [index for index, item in enumerate(list_total_myd03) if item in twenty_two_hour]
             twenty_three = [index for index, item in enumerate(list_total_myd03) if item in twenty_three_hour]
+
+            # print(cero)
+            # print(np.array(self.read_myd03_files())) 
+            #f_Myd03
             
-            cero_Myd03 = list(np.array(self.read_myd03_files)[cero])
-            one_Myd03 = list(np.array(self.read_myd03_files)[one])
-            two_Myd03 = list(np.array(self.read_myd03_files)[two])
-            three_Myd03 = list(np.array(self.read_myd03_files)[three])
-            four_Myd03 = list(np.array(self.read_myd03_files)[four])
-            five_Myd03 = list(np.array(self.read_myd03_files)[five])
-            six_Myd03 = list(np.array(self.read_myd03_files)[six])
-            seven_Myd03 = list(np.array(self.read_myd03_files)[seven])
-            eight_Myd03 = list(np.array(self.read_myd03_files)[eight])
-            nine_Myd03 = list(np.array(self.read_myd03_files)[nine])
-            ten_Myd03 = list(np.array(self.read_myd03_files)[ten])
-            eleven_Myd03 = list(np.array(self.read_myd03_files)[eleven])
-            twelve_Myd03 = list(np.array(self.read_myd03_files)[twelve])
-            thirteen_Myd03 = list(np.array(self.read_myd03_files)[thirteen])
-            fourteen_Myd03 = list(np.array(self.read_myd03_files)[fourteen])
-            fifteen_Myd03 = list(np.array(self.read_myd03_files)[fifteen])
-            sixteen_Myd03 = list(np.array(self.read_myd03_files)[sixteen])
-            seventeen_Myd03 = list(np.array(self.read_myd03_files)[seventeen])
-            eighteen_Myd03 = list(np.array(self.read_myd03_files)[eighteen])
-            nineteen_Myd03 = list(np.array(self.read_myd03_files)[nineteen])
-            twenty_Myd03 = list(np.array(self.read_myd03_files)[twenty])
-            twenty_one_Myd03 = list(np.array(self.read_myd03_files)[twenty_one])
-            twenty_two_Myd03 = list(np.array(self.read_myd03_files)[twenty_two])
-            twenty_three_Myd03 = list(np.array(self.read_myd03_files)[twenty_three])
+            cero_Myd03 = list(np.array(f_Myd03)[cero])
+            one_Myd03 = list(np.array(f_Myd03)[one])
+            two_Myd03 = list(np.array(f_Myd03)[two])
+            three_Myd03 = list(np.array(f_Myd03)[three])
+            four_Myd03 = list(np.array(f_Myd03)[four])
+            five_Myd03 = list(np.array(f_Myd03)[five])
+            six_Myd03 = list(np.array(f_Myd03)[six])
+            seven_Myd03 = list(np.array(f_Myd03)[seven])
+            eight_Myd03 = list(np.array(f_Myd03)[eight])
+            nine_Myd03 = list(np.array(f_Myd03)[nine])
+            ten_Myd03 = list(np.array(f_Myd03)[ten])
+            eleven_Myd03 = list(np.array(f_Myd03)[eleven])
+            twelve_Myd03 = list(np.array(f_Myd03)[twelve])
+            thirteen_Myd03 = list(np.array(f_Myd03)[thirteen])
+            fourteen_Myd03 = list(np.array(f_Myd03)[fourteen])
+            fifteen_Myd03 = list(np.array(f_Myd03)[fifteen])
+            sixteen_Myd03 = list(np.array(f_Myd03)[sixteen])
+            seventeen_Myd03 = list(np.array(f_Myd03)[seventeen])
+            eighteen_Myd03 = list(np.array(f_Myd03)[eighteen])
+            nineteen_Myd03 = list(np.array(f_Myd03)[nineteen])
+            twenty_Myd03 = list(np.array(f_Myd03)[twenty])
+            twenty_one_Myd03 = list(np.array(f_Myd03)[twenty_one])
+            twenty_two_Myd03 = list(np.array(f_Myd03)[twenty_two])
+            twenty_three_Myd03 = list(np.array(f_Myd03)[twenty_three])
+
             f_Myd03_hours = [cero_Myd03, one_Myd03, two_Myd03, three_Myd03, four_Myd03, five_Myd03, six_Myd03, seven_Myd03
                             , eight_Myd03, nine_Myd03, ten_Myd03, eleven_Myd03, twelve_Myd03, thirteen_Myd03,
                             fourteen_Myd03, fifteen_Myd03, sixteen_Myd03, seventeen_Myd03, eighteen_Myd03, 
                             nineteen_Myd03, twenty_Myd03, twenty_one_Myd03, twenty_two_Myd03, twenty_three_Myd03]
             # devulve lista de listas por horas
-            
-            cero_Myd02 = list(np.array(self.read_myd021_files)[cero])
-            one_Myd02 = list(np.array(self.read_myd021_files)[one])
-            two_Myd02 = list(np.array(self.read_myd021_files)[two])
-            three_Myd02 = list(np.array(self.read_myd021_files)[three])
-            four_Myd02 = list(np.array(self.read_myd021_files)[four])
-            five_Myd02 = list(np.array(self.read_myd021_files)[five])
-            six_Myd02 = list(np.array(self.read_myd021_files)[six])
-            seven_Myd02 = list(np.array(self.read_myd021_files)[seven])
-            eight_Myd02 = list(np.array(self.read_myd021_files)[eight])
-            nine_Myd02 = list(np.array(self.read_myd021_files)[nine])
-            ten_Myd02 = list(np.array(self.read_myd021_files)[ten])
-            eleven_Myd02 = list(np.array(self.read_myd021_files)[eleven])
-            twelve_Myd02 = list(np.array(self.read_myd021_files)[twelve])
-            thirteen_Myd02 = list(np.array(self.read_myd021_files)[thirteen])
-            fourteen_Myd02 = list(np.array(self.read_myd021_files)[fourteen])
-            fifteen_Myd02 = list(np.array(self.read_myd021_files)[fifteen])
-            sixteen_Myd02 = list(np.array(self.read_myd021_files)[sixteen])
-            seventeen_Myd02 = list(np.array(self.read_myd021_files)[seventeen])
-            eighteen_Myd02 = list(np.array(self.read_myd021_files)[eighteen])
-            nineteen_Myd02 = list(np.array(self.read_myd021_files)[nineteen])
-            twenty_Myd02 = list(np.array(self.read_myd021_files)[twenty])
-            twenty_one_Myd02 = list(np.array(self.read_myd021_files)[twenty_one])
-            twenty_two_Myd02 = list(np.array(self.read_myd021_files)[twenty_two])
-            twenty_three_Myd02 = list(np.array(self.read_myd021_files)[twenty_three])
+
+            #, f_Myd02
+           
+            cero_Myd02 = list(np.array(f_Myd02)[cero])
+            one_Myd02 = list(np.array(f_Myd02)[one])
+            two_Myd02 = list(np.array(f_Myd02)[two])
+            three_Myd02 = list(np.array(f_Myd02)[three])
+            four_Myd02 = list(np.array(f_Myd02)[four])
+            five_Myd02 = list(np.array(f_Myd02)[five])
+            six_Myd02 = list(np.array(f_Myd02)[six])
+            seven_Myd02 = list(np.array(f_Myd02)[seven])
+            eight_Myd02 = list(np.array(f_Myd02)[eight])
+            nine_Myd02 = list(np.array(f_Myd02)[nine])
+            ten_Myd02 = list(np.array(f_Myd02)[ten])
+            eleven_Myd02 = list(np.array(f_Myd02)[eleven])
+            twelve_Myd02 = list(np.array(f_Myd02)[twelve])
+            thirteen_Myd02 = list(np.array(f_Myd02)[thirteen])
+            fourteen_Myd02 = list(np.array(f_Myd02)[fourteen])
+            fifteen_Myd02 = list(np.array(f_Myd02)[fifteen])
+            sixteen_Myd02 = list(np.array(f_Myd02)[sixteen])
+            seventeen_Myd02 = list(np.array(f_Myd02)[seventeen])
+            eighteen_Myd02 = list(np.array(f_Myd02)[eighteen])
+            nineteen_Myd02 = list(np.array(f_Myd02)[nineteen])
+            twenty_Myd02 = list(np.array(f_Myd02)[twenty])
+            twenty_one_Myd02 = list(np.array(f_Myd02)[twenty_one])
+            twenty_two_Myd02 = list(np.array(f_Myd02)[twenty_two])
+            twenty_three_Myd02 = list(np.array(f_Myd02)[twenty_three])
+
             f_Myd02_hours = [cero_Myd02, one_Myd02, two_Myd02, three_Myd02, four_Myd02, five_Myd02, six_Myd02, seven_Myd02
                 , eight_Myd02, nine_Myd02, ten_Myd02, eleven_Myd02, twelve_Myd02, thirteen_Myd02,
                 fourteen_Myd02, fifteen_Myd02, sixteen_Myd02, seventeen_Myd02, eighteen_Myd02, 
                 nineteen_Myd02, twenty_Myd02, twenty_one_Myd02, twenty_two_Myd02, twenty_three_Myd02]
             
-            cero_Myd35 = list(np.array(self.read_myd35_files)[cero])
-            one_Myd35 = list(np.array(self.read_myd35_files)[one])
-            two_Myd35 = list(np.array(self.read_myd35_files)[two])
-            three_Myd35 = list(np.array(self.read_myd35_files)[three])
-            four_Myd35 = list(np.array(self.read_myd35_files)[four])
-            five_Myd35 = list(np.array(self.read_myd35_files)[five])
-            six_Myd35 = list(np.array(self.read_myd35_files)[six])
-            seven_Myd35 = list(np.array(self.read_myd35_files)[seven])
-            eight_Myd35 = list(np.array(self.read_myd35_files)[eight])
-            nine_Myd35 = list(np.array(self.read_myd35_files)[nine])
-            ten_Myd35 = list(np.array(self.read_myd35_files)[ten])
-            eleven_Myd35 = list(np.array(self.read_myd35_files)[eleven])
-            twelve_Myd35 = list(np.array(self.read_myd35_files)[twelve])
-            thirteen_Myd35 = list(np.array(self.read_myd35_files)[thirteen])
-            fourteen_Myd35 = list(np.array(self.read_myd35_files)[fourteen])
-            fifteen_Myd35 = list(np.array(self.read_myd35_files)[fifteen])
-            sixteen_Myd35 = list(np.array(self.read_myd35_files)[sixteen])
-            seventeen_Myd35 = list(np.array(self.read_myd35_files)[seventeen])
-            eighteen_Myd35 = list(np.array(self.read_myd35_files)[eighteen])
-            nineteen_Myd35 = list(np.array(self.read_myd35_files)[nineteen])
-            twenty_Myd35 = list(np.array(self.read_myd35_files)[twenty])
-            twenty_one_Myd35 = list(np.array(self.read_myd35_files)[twenty_one])
-            twenty_two_Myd35 = list(np.array(self.read_myd35_files)[twenty_two])
-            twenty_three_Myd35 = list(np.array(self.read_myd35_files)[twenty_three])
+
+            #f_Myd35
+            cero_Myd35 = list(np.array(f_Myd35)[cero])
+            one_Myd35 = list(np.array(f_Myd35)[one])
+            two_Myd35 = list(np.array(f_Myd35)[two])
+            three_Myd35 = list(np.array(f_Myd35)[three])
+            four_Myd35 = list(np.array(f_Myd35)[four])
+            five_Myd35 = list(np.array(f_Myd35)[five])
+            six_Myd35 = list(np.array(f_Myd35)[six])
+            seven_Myd35 = list(np.array(f_Myd35)[seven])
+            eight_Myd35 = list(np.array(f_Myd35)[eight])
+            nine_Myd35 = list(np.array(f_Myd35)[nine])
+            ten_Myd35 = list(np.array(f_Myd35)[ten])
+            eleven_Myd35 = list(np.array(f_Myd35)[eleven])
+            twelve_Myd35 = list(np.array(f_Myd35)[twelve])
+            thirteen_Myd35 = list(np.array(f_Myd35)[thirteen])
+            fourteen_Myd35 = list(np.array(f_Myd35)[fourteen])
+            fifteen_Myd35 = list(np.array(f_Myd35)[fifteen])
+            sixteen_Myd35 = list(np.array(f_Myd35)[sixteen])
+            seventeen_Myd35 = list(np.array(f_Myd35)[seventeen])
+            eighteen_Myd35 = list(np.array(f_Myd35)[eighteen])
+            nineteen_Myd35 = list(np.array(f_Myd35)[nineteen])
+            twenty_Myd35 = list(np.array(f_Myd35)[twenty])
+            twenty_one_Myd35 = list(np.array(f_Myd35)[twenty_one])
+            twenty_two_Myd35 = list(np.array(f_Myd35)[twenty_two])
+            twenty_three_Myd35 = list(np.array(f_Myd35)[twenty_three])
+
             f_Myd35_hours = [cero_Myd35, one_Myd35, two_Myd35, three_Myd35, four_Myd35, five_Myd35, six_Myd35, seven_Myd35
                 , eight_Myd35, nine_Myd35, ten_Myd35, eleven_Myd35, twelve_Myd35, thirteen_Myd35,
                 fourteen_Myd35, fifteen_Myd35, sixteen_Myd35, seventeen_Myd35, eighteen_Myd35, 
@@ -317,7 +495,6 @@ class readerUveg():
         except OSError as err:
             print("OS error: {0}".format(err))
 
-
     def read_csv_files(self):  
         try:
            # open the file in the write mode
@@ -329,6 +506,57 @@ class readerUveg():
                print('day:',self.day,'hour:',hour)
                
            return self.day, hour               
+    def extract_ndvi(lat_Modis, lon_Modis, ndvi_lat, ndvi_lon, ndvi):
+        ''' 
+        Resum: This function extracts a clipping of the NDVI matrix based on the input modis image
+        
+        Params: (lat_Modis, lon_Modis, ndvi_lat, ndvi_lon, ndvi)
+        
+        Output: Matrix-> clip_ndvi
+        
+        Call example: clip_ndvi = extract_ndvi(lat_Modis, lon_Modis, ndvi_lat, ndvi_lon, ndvi)
+        '''
+        
+        #print('Interpolate NDVI....................')
+        #print('....................................')
+        #print('ndvi_lat_min, ndvi_lat_max',np.min(ndvi_lat), np.max(ndvi_lat))
+        #print('ndvi_lon_min, ndvi_lon_max',np.min(ndvi_lon), np.max(ndvi_lon))
+        #print('lat_lon_Modis',np.max(lat_Modis), np.min(lat_Modis), np.min(lon_Modis), np.max(lon_Modis))
+        try:  
+            
+            ymax, ymin, xmin, xmax = np.max(lat_Modis), np.min(lat_Modis), np.min(lon_Modis), np.max(lon_Modis)          
+            bound_x = np.logical_and(ndvi_lon > xmin, ndvi_lon < xmax)
+            bound_y = np.logical_and(ndvi_lat > ymin, ndvi_lat < ymax)
+            box = np.logical_and(bound_x, bound_y)
+ 
+            if (box[0].size > 0) & (box[1].size > 0):
+                
+                tree_ndvi = spatial.cKDTree(np.c_[ndvi_lat[box], ndvi_lon[box]], compact_nodes=False, copy_data=False, balanced_tree=False)
+                distance_points_ndvi, index_ndvi = tree_ndvi.query(np.stack((lat_Modis,lon_Modis), axis=-1), k=1)
+                ndvi_d = ndvi[box].ravel()[index_ndvi]
+
+            elif bool(box[0].any()) == False:
+                ndvi_vacia = np.empty([lat_Modis.shape[0]])
+                ndvi_vacia[:] = np.nan
+                ndvi_d = ndvi_vacia
+
+            return ndvi_d.ravel()
+        
+        except ValueError:
+          print("Error extract ndvi clip")
+
+
+    @classmethod
+    def read_csv_files(cls, path, year, month):  
+        try:
+           # open the file in the write mode
+           with open(path + year + month +'.csv', 'r') as f:
+               line = f.readlines()
+               line = line[-1]
+               day = line[10:12]
+               hour = line[13:17]
+               
+           return day, hour               
            
         except OSError as err:
             print("OS error: {0}".format(err))
