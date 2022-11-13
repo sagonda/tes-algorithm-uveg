@@ -1,6 +1,6 @@
 import numpy as np
 
-class FCV_services():
+class FVC_services():
     def __init__(self, ndvi, e31, e32):
         self.ndvi = ndvi
         self.e31 = e31

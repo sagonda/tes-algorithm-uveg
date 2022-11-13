@@ -40,7 +40,6 @@ class utilities_extraction:
         
         Call example: t, q, lat_Nc, lon_Nc = extract_vars_era5(nc_fileT, nc_fileQ, mask_sea_land)
         '''
-        print(file_data)
         try:
             #====== Añadimos la ruta donde se ecuentra los perfiles netCDF4 descargado de CEDA
 
@@ -169,7 +168,6 @@ class utilities_extraction:
                 
                 tree_ndvi = spatial.cKDTree(np.c_[ndvi_lat[box], ndvi_lon[box]], compact_nodes=False, copy_data=False, balanced_tree=False)
                 distance_points_ndvi, index_ndvi = tree_ndvi.query(np.stack((lat_Modis,lon_Modis), axis=-1), k=1)
-                print(index_ndvi)
                 ndvi_d = ndvi[box].ravel()[index_ndvi]
 
             elif bool(box[0].any()) == False:
@@ -179,10 +177,9 @@ class utilities_extraction:
 
             return ndvi_d.ravel()
         
-        # except ValueError:
-        #   print("Error extract ndvi clip")
-        except Exception:
-                    print(traceback.format_exc())
+        except ValueError:
+            print("Error extract ndvi clip")
+        
 
     def extract_vars2m_era5(path_input, year, month, day, mask_sea_land_era5, hours, hours_list, file_data):
         ''' 
