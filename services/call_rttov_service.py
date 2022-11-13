@@ -1,5 +1,4 @@
 import numpy as np
-
 from rttov_wrapper_f2py import *
 
 class call_rttov_services():
@@ -65,10 +64,8 @@ class call_rttov_services():
                         'opts%rt_ir%addsolar 0 '    \
                         'opts%config%do_checkinput 0 '  \
                         'verbose_wrapper 0 '         \
-                        'nthreads 2 '                \
-                        'nprofs_per_call 30000 '       \
                         'nthreads 1 '                \
-                        'nprofs_per_call 10 '       \
+                        'nprofs_per_call 10000 '       \
                         'check_opts 1 '              \
                         'store_trans 1 '             \
                         'store_rad 1 '               \
