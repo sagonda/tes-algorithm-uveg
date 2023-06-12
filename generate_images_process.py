@@ -55,7 +55,7 @@ class GenerateImagesProcess():
     if check_satellite == '0':
         if check_server == '1':
             print('RUN IN PRODUCTION SERVER')
-            output_path_images_uveg ='/gws/nopw/j04/esacci_lst/UV/output_uveg/'
+            output_path_images_uveg ='/gws/nopw/j04/esacci_lst/UV/output_uveg_myd/'
             input_path_images_ndvi = '/gws/nopw/j04/esacci_lst/UV/data/ndvi/'
             input_path_images_collection61 = '/neodc/modis/data/MYD03/collection61/'
             input_path_images_MYD021KM = '/neodc/modis/data/MYD021KM/collection61/'
@@ -84,7 +84,7 @@ class GenerateImagesProcess():
     if check_satellite == '1':
         if check_server == '1':
             print('RUN IN PRODUCTION SERVER')
-            output_path_images_uveg ='/gws/nopw/j04/esacci_lst/UV/output_uveg_terra/'
+            output_path_images_uveg ='/gws/nopw/j04/esacci_lst/UV/output_uveg_mod/'
             input_path_images_ndvi = '/gws/nopw/j04/esacci_lst/UV/data/ndvi/'
             input_path_images_collection61 = '/neodc/modis/data/MOD03/collection61/'
             input_path_images_MOD021KM = '/neodc/modis/data/MOD021KM/collection61/'
