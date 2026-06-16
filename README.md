@@ -388,7 +388,7 @@ Para más detalles, consultar [LICENSE](LICENSE) y [COPYRIGHT](COPYRIGHT).
 |-----------|-------|------------|
 | **Daniel Salinas** | daniel.salinas@uv.es | IPL-UVEG |
 | **Drazen Skokovic** | drazen.skokovic@uv.es | IPL-UVEG |
-| **José María Sobrino** | jose.sobrino@uv.es | IPL-UVEG (PI) |
+| **Jose Sobrino** | jose.sobrino@uv.es | IPL-UVEG (PI) |
 
 📍 **Ubicación:** Unidad de Cambio Global, Universidad de Valencia, España
 
