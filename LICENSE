@@ -1,0 +1,99 @@
+# Creative Commons Attribution-NonCommercial 4.0 International
+
+This is a human-readable summary of (and not a substitute for) the license.
+
+## DISCLAIMER
+
+This is a human-readable summary of (and not a substitute for) the license. You are free to share this work under the conditions below. Please read the full legal text at https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
+---
+
+## You are free to:
+
+- **Share** — copy and redistribute the material in any medium or format
+- **Adapt** — remix, transform, and build upon the material
+
+The licensor cannot revoke these freedoms as long as you follow the license terms.
+
+---
+
+## Under the following terms:
+
+### Attribution (BY)
+You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+
+**Attribution Requirements:**
+- Include copyright notice: "© 2020-2026 Daniel Salinas, Drazen Skokovic, University of Valencia"
+- Cite the original repository: https://github.com/uv-uveg/tes-algorithm-uveg
+- Maintain a NOTICE file (if included in original work)
+- Link to this LICENSE
+
+### NonCommercial (NC)
+You may not use the material for commercial purposes.
+
+**What constitutes "Commercial Use":**
+- ❌ Selling derivative works or products using this code
+- ❌ Using this code in commercial services or SaaS platforms
+- ❌ Licensing this code to for-profit entities
+- ❌ Incorporating this code into proprietary software sold for profit
+- ✅ Using in academic research (even if published)
+- ✅ Using in non-profit organizations
+- ✅ Educational and instructional use
+- ✅ Government and public sector research
+
+### Additional terms:
+
+- No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+- If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+
+---
+
+## Full Legal Text
+
+To view a copy of this license, visit https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
+---
+
+## Disclaimer of Warranties
+
+THE WORK IS PROVIDED "AS-IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY DAMAGES.
+
+---
+
+## Important Notices
+
+1. **Non-Commercial Requirement:** Any use of this software must comply with the NC (NonCommercial) clause. Commercial entities must obtain explicit written permission from the copyright holders.
+
+2. **Attribution to Remote Sensing Community:** If this work is used in remote sensing applications or publications, proper scientific attribution to the TES Algorithm UVEG must be included in publications and derivative products.
+
+3. **No Trademark License:** This license does not grant permission to use the trade names, trademarks, service marks, or product names of the Licensor, except as required for reasonable and customary use.
+
+4. **Government License:** If you are a government entity using this work, you agree that you may only use it for non-commercial governmental purposes and in compliance with all applicable laws and regulations.
+
+---
+
+## How to Apply This License
+
+If you create a derivative work based on this project, include the following notice in prominent parts of the file:
+
+```
+This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.
+© 2020-2026 Daniel Salinas, Drazen Skokovic, University of Valencia
+For more details, see: https://creativecommons.org/licenses/by-nc/4.0/
+```
+
+---
+
+## Contact for Commercial Licensing
+
+For inquiries regarding commercial use or alternative licensing arrangements, please contact:
+
+- Daniel Salinas: daniel.salinas@uv.es
+- Drazen Skokovic: drazen.skokovic@uv.es
+- University of Valencia, Spain
+
+---
+
+**This license is EFFECTIVE from June 2020 and remains in force indefinitely unless modified by the copyright holders.**
+
+Last updated: June 2026
