@@ -1,6 +1,6 @@
-# 🛰️ TES Algorithm - UVEG Edition
+# TES Algorithm - UVEG Edition
 
-**Thermal Emissivity and Surface Temperature Retrieval from MODIS Satellite Data**
+**Thermal Emissivity and Surface Temperature (Recuperación de la temperatura de superficie terrestre) from MODIS Satellite Data**
 
 ![Status](https://img.shields.io/badge/status-production_ready-brightgreen?style=flat-square)
 ![Python](https://img.shields.io/badge/python-3.8+-blue?style=flat-square)
@@ -9,34 +9,34 @@
 
 ---
 
-## 📋 Descripción General
+## Descripción General
 
-El algoritmo **TES UVEG** (Thermal Emissivity and Surface temperature UVEG - Edition) es un sistema de **teledetección satelital de clase mundial** desarrollado por la Unidad de Cambio Global del Laboratorio de Procesamiento de Imágenes de la Universidad de Valencia. Este algoritmo retrieves la **temperatura de la superficie terrestre (LST)** y la **emitancia** a partir de datos térmicos multiespectrales del satélite TERRA (bandas MODIS 29, 31 y 32).
+El algoritmo **TES UVEG** (Thermal Emissivity and Surface temperature UVEG - Edition) es un sistema de **teledetección satelital de clase mundial** desarrollado por la Unidad de Cambio Global del Laboratorio de Procesamiento de Imágenes de la Universidad de Valencia. Este algoritmo realiza la recuperación de la temperatura de superficie terrestre (LST) y la emisividad a partir de datos térmicos multiespectrales del satélite TERRA (bandas MODIS 29, 31 y 32).
 
 **Productos Generados:**
-- 🌡️ Land Surface Temperature (LST) - Resolución 1km
-- 📊 Emitancia en bandas 29, 31, 32
-- ⚠️ Estimaciones de incertidumbre y errores
-- 🎯 Ángulos de visión y coordenadas geoespaciales
+- Land Surface Temperature (LST) - Resolución 1km
+- Emisividad en bandas 29, 31, 32
+- Estimaciones de incertidumbre y errores
+- Ángulos de visión y coordenadas geoespaciales
 
 ---
 
-## ✨ Características Principales
+## Características Principales
 
-- ✅ Procesamiento de datos MODIS Level 1B (MOD021KM, MOD03, MOD35_L2)
-- ✅ Algoritmo TES basado en física radiativa
-- ✅ Integración con RTTOV (Radiative Transfer) para perfiles atmosféricos
-- ✅ Correcciones de emisividad banda-específica
-- ✅ Detección y manejo de máscaras de nubes
-- ✅ Salida en formato netCDF4 de alta calidad
-- ✅ Estimación de errores y barras de incertidumbre
-- ✅ Procesamiento global de datos históricos (2002-presente)
-- ✅ Validación cruzada con datos de campo
-- ✅ Pipeline modular y extensible
+- Procesamiento de datos MODIS Level 1B (MOD021KM, MOD03, MOD35_L2)
+- Algoritmo TES basado en física radiativa
+- Integración con RTTOV (Radiative Transfer) para perfiles atmosféricos
+- Correcciones de emisividad banda-específica
+- Detección y manejo de máscaras de nubes
+- Salida en formato netCDF4 de alta calidad
+- Estimación de errores y barras de incertidumbre
+- Procesamiento global de datos históricos (2002-presente)
+- Validación cruzada con datos de campo
+- Pipeline modular y extensible
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 ### Diagrama de Flujo: Procesamiento TES
 
@@ -111,7 +111,7 @@ El algoritmo **TES UVEG** (Thermal Emissivity and Surface temperature UVEG - Edi
                     │   SALIDA: NetCDF4 (HDF5) - Nivel 2A     │
                     ├──────────────────────────────────────────┤
                     │  • UVEG_LST (Kelvin)                     │
-                    │  • UVEG_e29, e31, e32 (Emitancia)       │
+                    │  • UVEG_e29, e31, e32 (Emisividad)       │
                     │  • UVEG_LST_error, e29_error, etc       │
                     │  • View_angle, lat, lon                  │
                     │  • Metadatos QA/QC                       │
@@ -130,7 +130,7 @@ El algoritmo **TES UVEG** (Thermal Emissivity and Surface temperature UVEG - Edi
 
 ---
 
-## 🚀 Guía de Inicio Rápido
+## Guía de Inicio Rápido
 
 ### Requisitos del Sistema
 
@@ -221,18 +221,18 @@ python -c "from services.tes_algorithm_service import TesAlgorithmService; print
 
 ```
 TES_ALGORITHM_UVEG/
-├── 📄 README.md                              # Este archivo
-├── 📄 LICENSE                                # CC BY-NC 4.0
-├── 📄 COPYRIGHT                              # Términos de propiedad intelectual
-├── 📄 .gitignore                             # Exclusiones de Git
-├── 📄 requirements.txt                       # Dependencias Python
-├── 📄 .env.example                           # Template de variables de entorno
+├── README.md                              # Este archivo
+├── LICENSE                                # CC BY-NC 4.0
+├── COPYRIGHT                              # Términos de propiedad intelectual
+├── .gitignore                             # Exclusiones de Git
+├── requirements.txt                       # Dependencias Python
+├── .env.example                           # Template de variables de entorno
 │
-├── 🐍 generate_images_process.py             # Script principal (entry point)
-├── 📔 test.ipynb                             # Notebook de pruebas generales
-├── 📔 test_one_image.ipynb                   # Notebook de validación individual
+├── generate_images_process.py             # Script principal (entry point)
+├── test.ipynb                             # Notebook de pruebas generales
+├── test_one_image.ipynb                   # Notebook de validación individual
 │
-├── 📁 services/                              # Módulos de servicios especializados
+├── services/                              # Módulos de servicios especializados
 │   ├── __init__.py
 │   ├── bits_stripping_service.py             # Conversión 12→11 bits
 │   ├── call_rttov_service.py                 # Interfaz con RTTOV
@@ -249,18 +249,18 @@ TES_ALGORITHM_UVEG/
 │   ├── read_ndvi_service.py                  # Lectura índices NDVI
 │   ├── recal_lse_service.py                  # Recalibración emisividad
 │   ├── sw_service.py                         # Radiación onda corta
-│   ├── tes_algorithm_service.py              # ⭐ Algoritmo TES central
+│  ├── tes_algorithm_service.py              # Algoritmo TES central
 │   ├── unpacked_value_service.py             # Unpacking (descompresión)
 │   └── __pycache__/
 │
-├── 📁 utilities/                             # Funciones de utilidad común
+├── utilities/                             # Funciones de utilidad común
 │   ├── __init__.py
 │   ├── utilities.py                          # Helpers generales
 │   ├── utilities_extraction_data.py          # Extracción de datos
 │   └── __pycache__/
 │
-└── 📁 pruebas/                               # Datos de prueba
-    └── 20230626t142817_SienaIT_L1_B108_V01.hdf5
+└── pruebas/                               # Datos de prueba
+  └── 20230626t142817_SienaIT_L1_B108_V01.hdf5
 ```
 
 ---
@@ -272,9 +272,9 @@ Cada procesamiento genera un archivo **netCDF4** con estructura SDS (Scientific 
 ```
 TES_UVEG_MOD_v1.1.nc
 ├── UVEG_LST                (16-bit, Kelvin)
-├── UVEG_e29                (8-bit, Emitancia B29)
-├── UVEG_e31                (8-bit, Emitancia B31)
-├── UVEG_e32                (8-bit, Emitancia B32)
+├── UVEG_e29                (8-bit, Emisividad B29)
+├── UVEG_e31                (8-bit, Emisividad B31)
+├── UVEG_e32                (8-bit, Emisividad B32)
 ├── UVEG_LST_error          (8-bit, σ en Kelvin)
 ├── UVEG_e29_error          (16-bit, σ normalized)
 ├── UVEG_e31_error          (16-bit, σ normalized)
@@ -282,9 +282,9 @@ TES_UVEG_MOD_v1.1.nc
 ├── View_angle              (8-bit, grados 0-180)
 ├── lat                     (32-bit, grados)
 └── lon                     (32-bit, grados)
-    ├── scale_factor
-    ├── add_offset
-    └── _FillValue
+  ├── scale_factor
+  ├── add_offset
+  └── _FillValue
 ```
 
 **Especificaciones de Granule:**
@@ -308,7 +308,7 @@ $$R_i = \tau_i [\epsilon_i B_i(T_{LS}) + (1-\epsilon_i)L_{down,i}] + L_{up,i} + 
 Donde:
 - $R_i$ = Radiancia observada en banda $i$ (W m⁻² sr⁻¹ μm⁻¹)
 - $\tau_i$ = Transmitancia atmosférica
-- $\epsilon_i$ = Emitancia en banda $i$ (0-1)
+- $\epsilon_i$ = Emisividad en banda $i$ (0-1)
 - $B_i(T_{LS})$ = Función de Planck @ $T_{LS}$
 - $L_{down,i}$ = Radiancia downwelling atmosférica
 - $L_{up,i}$ = Radiancia upwelling atmosférica
@@ -321,7 +321,7 @@ $$\begin{bmatrix} T_{LS} \\ \epsilon_{31} \end{bmatrix} = \arg\min_{\mathbf{x}} 
 
 ---
 
-## 🧪 Testing y Validación
+## Testing y Validación
 
 ```bash
 # Ejecutar suite completa de tests
@@ -336,7 +336,7 @@ pytest --cov=services --cov-report=html
 
 ---
 
-## 📚 Documentación Completa
+## Documentación Completa
 
 - 📖 [Especificación Técnica MOD (Readme_MOD.md)](Readme_MOD.md)
 - 📖 [Especificación Técnica MYD (Readme_MYD.md)](Readme_MYD.md)
@@ -344,7 +344,7 @@ pytest --cov=services --cov-report=html
 
 ---
 
-## 🤝 Contribuciones
+## Contribuciones
 
 Las contribuciones son bienvenidas bajo la licencia **CC BY-NC 4.0**. Por favor:
 
@@ -361,7 +361,7 @@ Las contribuciones son bienvenidas bajo la licencia **CC BY-NC 4.0**. Por favor:
 
 ---
 
-## 📝 Licencia y Derechos de Autor
+## Licencia y Derechos de Autor
 
 **Este proyecto está bajo licencia CC BY-NC 4.0.**
 
@@ -372,17 +372,17 @@ Las contribuciones son bienvenidas bajo la licencia **CC BY-NC 4.0**. Por favor:
 **Institución:** Unidad de Cambio Global (UCG), Laboratorio de Procesamiento de Imágenes (IPL)  
 **Universidad:** Universidad de Valencia, España
 
-⚖️ **Términos Clave:**
-- ✅ Uso académico y educativo **PERMITIDO**
-- ✅ Redistribución con atribución **PERMITIDA**
-- ❌ Uso comercial **PROHIBIDO**
-- ❌ Obras derivadas comerciales **PROHIBIDAS**
+**Términos Clave:**
+- Uso académico y educativo: **PERMITIDO**
+- Redistribución con atribución: **PERMITIDA**
+- Uso comercial: **PROHIBIDO**
+- Obras derivadas comerciales: **PROHIBIDAS**
 
 Para más detalles, consultar [LICENSE](LICENSE) y [COPYRIGHT](COPYRIGHT).
 
 ---
 
-## 📧 Contacto y Soporte
+## Contacto y Soporte
 
 | Responsable | Email | Institución |
 |-----------|-------|------------|
@@ -394,7 +394,7 @@ Para más detalles, consultar [LICENSE](LICENSE) y [COPYRIGHT](COPYRIGHT).
 
 ---
 
-## 🎓 Citas Científicas
+## Citas Científicas
 
 Si utilizas este algoritmo en investigación, por favor cita:
 
@@ -410,19 +410,19 @@ Si utilizas este algoritmo en investigación, por favor cita:
 
 ---
 
-## 📊 Métricas del Proyecto
+## Métricas del Proyecto
 
-- ⭐ **Acciones:** Procesamiento automático MODIS diario
-- 🌍 **Cobertura:** Global
-- 📈 **Series Temporales:** 2002-Presente (~22 años)
-- 🎯 **Precisión LST:** ±0.5-1.0 K (validación SURFRAD)
-- 🏆 **Productos:** +8 millones de granules procesadas
+- **Acciones:** Procesamiento automático MODIS diario
+- **Cobertura:** Global
+- **Series Temporales:** 2002-Presente (~22 años)
+- **Precisión LST:** ±0.5-1.0 K (validación SURFRAD)
+- **Productos:** +8 millones de granules procesadas
 
 ---
 
 **Última actualización:** Junio 2026  
 **Versión:** 1.1  
-**Estado:** Production Ready ✅
+**Estado:** Production Ready
 
 ---
 
