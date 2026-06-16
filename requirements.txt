@@ -1,0 +1,125 @@
+# TES Algorithm UVEG - Python Dependencies
+# Python 3.8+
+# Install with: pip install -r requirements.txt
+
+# ============================================================================
+# SCIENTIFIC COMPUTING & DATA PROCESSING
+# ============================================================================
+numpy>=1.21.0,<2.0.0           # Numerical computing foundation
+scipy>=1.7.0                   # Scientific computing utilities
+scikit-learn>=1.0.0            # Machine learning utilities (FVC, validation)
+
+# ============================================================================
+# GEOSPATIAL & REMOTE SENSING
+# ============================================================================
+netCDF4>=1.5.7                 # NetCDF4/HDF5 file I/O (essential)
+h5py>=3.0.0                    # HDF5 file access
+rasterio>=1.2.0                # Geospatial raster I/O
+geopandas>=0.10.0              # Geospatial vector operations
+shapely>=1.7.0                 # Geometric operations
+
+# ============================================================================
+# ATMOSPHERIC RADIATIVE TRANSFER (RTTOV Interface)
+# ============================================================================
+# Note: RTTOV itself must be compiled separately
+# These are Python bindings/utilities for RTTOV interface
+cffi>=1.14.0                   # C Foreign Function Interface
+
+# ============================================================================
+# DATETIME & TIME SERIES
+# ============================================================================
+python-dateutil>=2.8.0         # Extended date/time utilities
+pytz>=2021.1                   # Timezone support
+
+# ============================================================================
+# IMAGE & DATA VISUALIZATION (Optional, for notebooks)
+# ============================================================================
+matplotlib>=3.3.0              # Plotting library (used in notebooks)
+Pillow>=8.0.0                  # Image processing
+
+# ============================================================================
+# JUPYTER NOTEBOOKS
+# ============================================================================
+jupyter>=1.0.0                 # Jupyter notebook server
+ipython>=7.20.0                # Interactive Python shell
+ipywidgets>=7.6.0              # Interactive widgets for notebooks
+notebook>=6.3.0                # Classic Jupyter interface
+
+# ============================================================================
+# UTILITY & CONFIGURATION
+# ============================================================================
+python-dotenv>=0.19.0          # .env file support for environment variables
+pyyaml>=5.4.0                  # YAML configuration file support
+tqdm>=4.60.0                   # Progress bars for long-running tasks
+
+# ============================================================================
+# LOGGING & DEBUGGING
+# ============================================================================
+loguru>=0.5.0                  # Advanced logging with pretty formatting
+# OR use standard library logging (already included in Python)
+
+# ============================================================================
+# TESTING & QUALITY ASSURANCE
+# ============================================================================
+pytest>=6.2.0                  # Testing framework
+pytest-cov>=2.12.0             # Code coverage plugin
+pytest-xdist>=2.3.0            # Parallel test execution
+
+# ============================================================================
+# DOCUMENTATION
+# ============================================================================
+sphinx>=4.0.0                  # Documentation generator
+sphinx-rtd-theme>=1.0.0        # ReadTheDocs theme for Sphinx
+
+# ============================================================================
+# CODE QUALITY
+# ============================================================================
+black>=21.0                    # Code formatter (PEP 8)
+flake8>=3.9.0                  # Linter
+pylint>=2.8.0                  # Advanced linter
+mypy>=0.910                    # Static type checker
+isort>=5.9.0                   # Import statement organizer
+
+# ============================================================================
+# PERFORMANCE PROFILING (Optional)
+# ============================================================================
+memory-profiler>=0.58.0        # Memory usage profiling
+line-profiler>=3.3.0           # Line-by-line profiling
+
+# ============================================================================
+# OPTIONAL: DATA VALIDATION & PERSISTENCE
+# ============================================================================
+# pandas>=1.2.0                # DataFrames (optional, if used in utilities)
+# sqlalchemy>=1.4.0            # ORM for database operations (if tracking in DB)
+
+# ============================================================================
+# SYSTEM REQUIREMENTS
+# ============================================================================
+# Linux, macOS, or Windows (WSL2 recommended)
+# Minimum 8 GB RAM, 2 GB free disk space
+# Python 3.8 or later (3.10+ recommended)
+# GCC/Clang compiler (for some package compilation)
+# FFTPACK library (often included with numpy)
+
+# ============================================================================
+# INSTALLATION NOTES
+# ============================================================================
+# 1. Create virtual environment:
+#    python3 -m venv venv
+#    source venv/bin/activate  # Linux/macOS
+#    venv\Scripts\activate      # Windows
+#
+# 2. Upgrade pip:
+#    pip install --upgrade pip setuptools wheel
+#
+# 3. Install dependencies:
+#    pip install -r requirements.txt
+#
+# 4. For development (add testing tools):
+#    pip install -r requirements-dev.txt
+#
+# 5. Verify RTTOV installation:
+#    This package interfaces with separately-installed RTTOV v13+
+#    Ensure RTTOV_ROOT_PATH environment variable is set in .env
+#
+# ============================================================================
